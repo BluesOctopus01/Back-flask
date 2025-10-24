@@ -37,7 +37,7 @@ def create_user(
         username=username,
         first_name=first_name,
         last_name=last_name,
-        hashed_password=hashed_password,
+        password=hashed_password,
         email=email,
         gender=gender,
         phone_number=phone_number,

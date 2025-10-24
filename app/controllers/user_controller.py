@@ -6,22 +6,21 @@ from app.models import db
 from app.utils.jwt_utils import generate_token
 
 
-def get_users_controller():
-    """EndPoint : GET /users/admin"""
-    try:
-        users = fetch_all_users()
-        users_dict = [user.to_dict() for user in users]
-        return jsonify(users_dict), 200
-    except Exception as e:
-        return jsonify({"error": "Failed to fetch users", "details": str(e)}), 500
+# def get_users_controller():
+#     """EndPoint : GET /users/admin"""
+#     try:
+#         users = fetch_all_users()
+#         users_dict = [user.to_dict() for user in users]
+#         return jsonify(users_dict), 200
+#     except Exception as e:
+#         return jsonify({"error": "Failed to fetch users", "details": str(e)}), 500
 
 
 # region POST
 
 
-def post_user_controller():
+def post_user_controller(data):
     """EndPoint : POST /users"""
-    data = request.get_json()
     dto, err = UserCreateDTO.from_json(data)
     if err:
         return jsonify(err), 400
