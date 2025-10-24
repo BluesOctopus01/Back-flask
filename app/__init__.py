@@ -38,14 +38,13 @@ def create_app():
     CORS(app)
 
     # Import des models
-    from app.models import User, Deck
-    from app.models import Card, Qa, AnswerQcm, Gapfill, Image, Qcm
+    from app.models import User
 
     # # Import & Enregistrement des blueprints
     # from app.routes.todo_routes import todo_bp
-    # from app.routes.user_routes import user_bp
+    from app.routes.user_route import user_bp, admin_bp
 
-    # app.register_blueprint(todo_bp)
     # app.register_blueprint(user_bp)
-
+    app.register_blueprint(user_bp)
+    app.register_blueprint(admin_bp)
     return app

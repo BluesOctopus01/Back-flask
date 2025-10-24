@@ -32,3 +32,6 @@ python-dotenv==1.0.0
 # === CORS pour frontend Angular ===
 # Autorise les requêtes cross-origin (CORS) entre ton API Flask et ton frontend Angular (port différent).
 Flask-Cors==4.0.0
+
+# === Test unitaires ===
+pytest==8.4.2
