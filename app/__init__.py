@@ -38,7 +38,7 @@ def create_app():
     CORS(app)
 
     # Import des models
-    from app.models import User
+    from app.models.user_models.user import User
 
     # # Import & Enregistrement des blueprints
     # from app.routes.todo_routes import todo_bp
@@ -47,4 +47,5 @@ def create_app():
     # app.register_blueprint(user_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp)
+
     return app
