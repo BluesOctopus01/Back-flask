@@ -42,38 +42,39 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User {self.username}>"
 
+    def to_dict(self, include_private: bool = False) -> dict:
+        """
+        Return a JSON-compatible dictionary representing the user.
 
-def to_dict(self, include_private: bool = False) -> dict:
-    """
-    Return a JSON-compatible dictionary representing the user.
+        Args:
+            include_private (bool): If True, include sensitive fields like email.
+                                    Defaults to False for safety.
 
-    Args:
-        include_private (bool): If True, include sensitive fields like email.
-                                Defaults to False for safety.
+        Returns:
+            dict: Serialized representation of the user.
+        """
 
-    Returns:
-        dict: Serialized representation of the user.
-    """
+        user_data = {
+            "id": self.id,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "gender": self.gender,
+            "phone_number": self.phone_number,
+            "birth_date": self.birth_date.isoformat() if self.birth_date else None,
+            "country": self.country,
+            "address": self.address,
+            "user_bio": self.user_bio,
+            "image": self.image,
+            "role": self.role,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "last_login_at": (
+                self.last_login_at.isoformat() if self.last_login_at else None
+            ),
+        }
 
-    user_data = {
-        "id": self.id,
-        "username": self.username,
-        "first_name": self.first_name,
-        "last_name": self.last_name,
-        "gender": self.gender,
-        "phone_number": self.phone_number,
-        "birth_date": self.birth_date.isoformat() if self.birth_date else None,
-        "country": self.country,
-        "address": self.address,
-        "user_bio": self.user_bio,
-        "image": self.image,
-        "role": self.role,
-        "is_active": self.is_active,
-        "created_at": self.created_at.isoformat() if self.created_at else None,
-        "last_login_at": self.last_login_at.isoformat() if self.last_login_at else None,
-    }
+        if include_private:
+            user_data["email"] = self.email
 
-    if include_private:
-        user_data["email"] = self.email
-
-    return user_data
+        return user_data

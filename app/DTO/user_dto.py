@@ -111,7 +111,7 @@ class UserCreateDTO:
                     "contain uppercase, lowercase, a number, and a special character."
                 )
             }
-
+        # todo === Verify image format ===
         return (
             UserCreateDTO(
                 username=username,
