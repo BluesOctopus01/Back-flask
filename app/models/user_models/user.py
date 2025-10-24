@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     last_login_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
+    # todo potentiellement table ext role
     role = db.Column(db.String(50), default="user")
     is_active = db.Column(db.Boolean, default=True)
 
@@ -34,13 +35,12 @@ class User(db.Model, UserMixin):
         return f"<User {self.username}>"
 
     def to_dict(self):
-        """Return a JSON compatible dictionnary without psw"""
+        """Return a JSON compatible dictionnary without psw and email"""
         return {
             "id": self.id,
             "username": self.username,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "email": self.email,
             "phone_number": self.phone_number,
             "birth_date": self.birth_date.isoformat() if self.birth_date else None,
             "address": self.address,

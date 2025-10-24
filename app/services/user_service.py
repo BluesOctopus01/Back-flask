@@ -14,6 +14,7 @@ def fetch_all_users() -> list[User]:
 
 
 # region POST
+# todo premier user = admin / changer mot de passe premiere co
 # end region
 
 

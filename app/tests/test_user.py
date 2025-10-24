@@ -14,10 +14,11 @@ def client():
 
 
 def test_get_all_user(client):
+    # todo fournir un token pour le role admin
+
     response = client.get("https://localhost:5000/users/admin")
     assert response.status_code == 200
     # TODO tests
-    # todo fournir un token pour le role admin
 
 
 # endregion
