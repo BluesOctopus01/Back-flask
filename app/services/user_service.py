@@ -14,6 +14,10 @@ def fetch_all_users() -> list[User]:
 
 
 # region POST
+def post_user() -> User:
+    """Return a created user"""
+
+
 # todo premier user = admin / changer mot de passe premiere co
 # end region
 
