@@ -27,12 +27,12 @@ class UserCreateDTO:
 
     PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$")
 
-    # règle mot de passe
-    # il doit y avoir au moins une lettre minuscule
-    # il doit y avoir au moins une lettre majuscule
-    # il doit y avoir au moins un chiffre
-    # il doit y avoir au moins un caractère spécial parmi ceux listés
-    # au moins 8 caractères au total
+    # rule mot de passe
+    # il doit y avoir at at least a letter minuscule
+    # il doit y avoir at least une letter majuscule
+    # il doit y avoir at least un number
+    # il doit y avoir at least un special character
+    # at least 8 char total
     @staticmethod
     def is_valid_password(password: str) -> bool:
         """Verify if the password is good enough else return False"""

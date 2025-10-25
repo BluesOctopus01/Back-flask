@@ -1,6 +1,7 @@
+from datetime import datetime, timezone
 from app.models.user_models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from models import db
 # region GET
 
 
@@ -49,6 +50,19 @@ def create_user(
         role=role,
     )
     return new_user
+
+def authenticate_user( email: str,password : str) -> User | None:
+    """Return an existing user or None if not found"""
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return None
+
+    if check_password_hash(user.password, password):
+        user.last_login_at = datetime.now(timezone.utc)
+        db.session.commit()
+        return user
+
+    return None
 
 
 # todo premier user = admin / changer mot de passe premiere co si c'est le cas
