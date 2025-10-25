@@ -48,7 +48,7 @@ def post_user_controller(data):
     return jsonify(response_data), 201
 
 def login_user_controller(data):
-    """EndPoint : POST /users/login"""
+    """EndPoint : POST /users/login/"""
     if not data.get("password") or not data.get("email"):
         return jsonify({"error": "Email and password are needed"}),400
     
