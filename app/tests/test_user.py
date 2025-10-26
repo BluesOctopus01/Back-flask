@@ -20,7 +20,29 @@ def client():
 
 #region POST 
 def test_create_user(client):
-    pass
+    payload = {
+        "username" :"Testeurfou",
+        "first_name" :"TestFirst",
+        "last_name" :"TestLast",
+        "password" :"Test_123456",
+        "email" :"test@gmail.com",
+        "gender" :"M",
+        "phone_number" :"047695872",
+        "birthdate" :"30-10-1998",
+        "country" :"Belgium",
+        "address" :"Rue de feur, 56",
+        "user_bio" :"Je test mon application tel un bon developper",
+        "image" :"test.png"
+    } 
+    response = client.post("/users/", json= payload)
+    
+    assert response.status_code == 201
+
+    data = response.get_json()
+    assert "token" in data
+    assert data["username"] == payload["username"]
+
+    
 def test_login_user(client):
     pass
 
