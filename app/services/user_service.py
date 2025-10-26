@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from app.models.user_models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db
+from app.models import db
+
 # region GET
 
 
@@ -51,7 +52,8 @@ def create_user(
     )
     return new_user
 
-def authenticate_user( email: str,password : str) -> User | None:
+
+def authenticate_user(email: str, password: str) -> User | None:
     """Return an existing user or None if not found"""
     user = User.query.filter_by(email=email).first()
     if not user:
