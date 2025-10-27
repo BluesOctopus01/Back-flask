@@ -2,11 +2,14 @@ from flask import Blueprint, request, jsonify
 
 from app.utils.jwt_utils import jwt_required, admin_required, generate_token
 
-from app.controllers.user_controller import post_user_controller, get_users_controller, login_user_controller
+from app.controllers.user_controller import (
+    post_user_controller,
+    get_users_controller,
+    login_user_controller,
+)
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
 admin_bp = Blueprint("admin_bp", __name__, url_prefix="/users/admin/")
-
 
 
 # region USER ROUTE
@@ -16,15 +19,17 @@ def register_user_route():
     return post_user_controller(data)
 
 
-@user_bp.route("/login",methods=["POST"])
+@user_bp.route("/login", methods=["POST"])
 def login_user_route():
     data = request.get_json()
     return login_user_controller(data)
 
+
 # endregion
 
 
-#region ADMIN ROUTE
+# region ADMIN ROUTE
+
 
 @admin_bp.route("/", methods=["GET"])
 @admin_required
