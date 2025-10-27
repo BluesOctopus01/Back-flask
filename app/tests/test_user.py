@@ -1,13 +1,22 @@
 import pytest
-from app import create_app
+from app import create_app, db
+from app.configs.config import TestConfig
 
 
 @pytest.fixture
 def client():
-    """Client de test Flask isolé pour chaque test"""
-    app = create_app()
-    app.testing = True
-    return app.test_client()
+    app = create_app(config_class=TestConfig)
+
+    with app.app_context():
+        db.create_all()
+
+    with app.test_client() as client:
+        yield client
+
+    with app.app_context():
+        db.session.remove()
+        db.drop_all()
+    # TODO comprendre
 
 
 # !! Clé d'accès
@@ -23,11 +32,11 @@ def client():
 # region POST
 def test_create_user(client):
     payload = {
-        "username": "Testeurfou1324",
+        "username": "Testeurfou13245",
         "first_name": "TestFirst",
         "last_name": "TestLast",
         "password": "Test!123456",
-        "email": "test123@gmail.com",
+        "email": "test12345@gmail.com",
         "gender": "M",
         "phone_number": "047695872",
         "birthdate": "1998-10-30",
@@ -38,7 +47,6 @@ def test_create_user(client):
     }
     response = client.post("/users/", json=payload)
     assert response.status_code == 201
-    #!! USER CRER DANS LA BASE DE DONNE + ID AUGMENTE A CHAUQE ESSAIE db.session.rollback() dans le test
 
 
 def test_login_user(client):

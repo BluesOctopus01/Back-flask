@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask_cors import CORS
 from dotenv import load_dotenv
+from app.configs.config import TestConfig
 import os
 
 # Initialisation des extensions
@@ -14,7 +15,7 @@ migrate = Migrate()
 
 
 # fontion de création de l'application
-def create_app():
+def create_app(config_class=None):
 
     # chargement des variables d'environnement
     load_dotenv()
@@ -22,15 +23,14 @@ def create_app():
     # Création de l'application Flask
     app = Flask(__name__)
 
-    # Configuration de l'application avec les variables d'environnement
-    # Clé secret pour le token
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev_secret")
-    # Configuration de la connection à la base de données
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-        "DATABASE_URL", "sqlite:///app.db"
-    )
-    # Désactivation du suivi des modifications de SQLAlchemy ( reduit la consommation de mémoire)
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    if config_class:
+        app.config.from_object(config_class)
+    else:
+        app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev_secret")
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+            "DATABASE_URL", "sqlite:///app.db"
+        )
+        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Initalisation des extensions avec l'application
     db.init_app(app)
