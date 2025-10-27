@@ -83,25 +83,27 @@ def test_login_user(client):
 # region GET
 
 
-def test_get_all_user(client):
-    # creation admin
-    payload_creation = {
-        "username": "Testeurfou13245",
-        "first_name": "TestFirst",
-        "last_name": "TestLast",
-        "password": "Test!123456",
-        "email": "test12345@gmail.com",
-        "gender": "M",
-        "phone_number": "047695872",
-        "birthdate": "1998-10-30",
-        "country": "Belgium",
-        "address": "Rue de feur, 56",
-        "user_bio": "Je test mon application tel un bon developper",
-        "image": "test.png",
-    }
-    response_creation = client.post("/users/", json=payload_creation)
-    assert response_creation.status_code == 201
-    data = response_creation.get_json()
+# def test_get_all_user(client):
+#     # creation admin
+#     payload_creation = {
+#         "username": "Testeurfou13245",
+#         "first_name": "TestFirst",
+#         "last_name": "TestLast",
+#         "password": "Test!123456",
+#         "email": "test12345@gmail.com",
+#         "gender": "M",
+#         "phone_number": "047695872",
+#         "birthdate": "1998-10-30",
+#         "country": "Belgium",
+#         "address": "Rue de feur, 56",
+#         "user_bio": "Je test mon application tel un bon developper",
+#         "image": "test.png",
+#     }
+#     response_creation = client.post("/users/", json=payload_creation)
+#     assert response_creation.status_code == 201
+#     data = response_creation.get_json()
+
+#     # utilisation du token admin pour le get all
 
 
 # endregion
