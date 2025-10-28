@@ -6,13 +6,14 @@ from app.controllers.user_controller import (
     post_user_controller,
     get_users_controller,
     login_user_controller,
+    get_user_controller,
 )
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
 
 
-# region USER ROUTE
-@user_bp.route("/", methods=["POST"])
+# region POST
+@user_bp.route("/register", methods=["POST"])
 def register_user_route():
     data = request.get_json()
     return post_user_controller(data)
@@ -27,13 +28,50 @@ def login_user_route():
 # endregion
 
 
-# region ADMIN ROUTE
+# region GET
+@user_bp.route("/profiles/<id>", methods=["GET"])
+def get_user_route(id):
+    return get_user_controller(id)
 
 
-@user_bp.route("/admin/", methods=["GET"])
+@user_bp.route("/admin", methods=["GET"])
 @admin_required
 def get_all_users_route():
     return get_users_controller()
+
+
+# endregion
+
+
+# region UPDATE
+@jwt_required
+@user_bp.route("/update", methods=["PUT"])
+def update_user_profile(id):
+    pass
+
+
+@jwt_required
+@user_bp.route("/update_password", methods=["PATCH"])
+def update_user_psw(id):
+    pass
+
+
+# endregion
+
+
+# region DELETE
+
+
+@user_bp.route("/delete", methods=["PATCH"])
+@jwt_required
+def soft_delete_user_self():
+    pass
+
+
+@user_bp.route("delete/<id>", methods=["PATCH"])
+@admin_required
+def soft_delete_user(id):
+    pass
 
 
 # endregion

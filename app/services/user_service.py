@@ -3,7 +3,14 @@ from app.models.user_models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
+
 # region GET
+def fetch_a_user(id: int) -> User:
+    """Return a single user with his id with only his public informations"""
+    user = User.query.filter_by(id=id).first()
+    if not user:
+        return None
+    return user
 
 
 def fetch_all_users() -> list[User]:

@@ -42,25 +42,14 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User {self.username}>"
 
-    def to_dict(self, include_private: bool = False) -> dict:
-        """
-        Return a JSON-compatible dictionary representing the user.
-
-        Args:
-            include_private (bool): If True, include sensitive fields like email.
-                                    Defaults to False for safety.
-
-        Returns:
-            dict: Serialized representation of the user.
-        """
-
-        user_data = {
+    def to_dict(self) -> dict:
+        """Return a JSON-compatible dictionary representing the user"""
+        return {
             "id": self.id,
             "username": self.username,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "gender": self.gender,
-            "phone_number": self.phone_number,
             "birth_date": self.birth_date.isoformat() if self.birth_date else None,
             "country": self.country,
             "address": self.address,
@@ -74,7 +63,12 @@ class User(db.Model, UserMixin):
             ),
         }
 
-        if include_private:
-            user_data["email"] = self.email
-
-        return user_data
+    def to_public_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "username": self.username,
+            "user_bio": self.user_bio,
+            "image": self.image,
+            "country": self.country,
+            "decks": [deck.to_summary_dict() for deck in self.decks],
+        }

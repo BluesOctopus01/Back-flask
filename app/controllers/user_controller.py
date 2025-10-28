@@ -1,11 +1,38 @@
-from app.services.user_service import fetch_all_users, create_user, authenticate_user
+from app.models.user_models.user import User
+from app.services.user_service import (
+    fetch_all_users,
+    create_user,
+    authenticate_user,
+    fetch_a_user,
+)
 from app.DTO.user_dto import UserCreateDTO
 from flask import jsonify, request
 from app.models import db
 from app.utils.jwt_utils import generate_token
 
 
+def check_user_active(user: User):
+    """Utilitary : Verifiy if the account is active or not"""
+    if not user.is_active:
+        return jsonify({"message": "This account is inactive"}), 403
+    return None
+
+
 # region GET
+def get_user_controller(id: int):
+    """EndPoint : GET /users/profiles/<id>"""
+
+    user = fetch_a_user(id)
+
+    if not user:
+        return jsonify({"message": "user not found"}), 404
+
+    check_user_active(user)
+
+    user_public = user.to_public_dict()
+    return jsonify(user_public), 200
+
+
 def get_users_controller():
     """EndPoint : GET /users/admin/"""
     try:
@@ -56,12 +83,9 @@ def login_user_controller(data):
     if not user:
         return jsonify({"error": "Invalid credentials"}), 404
 
-    if not user.is_active:
-        return (
-            jsonify({"message": "Your account is deactivated. Please reactivate it"}),
-            403,
-        )
-        # TODO gérer la logique niveau front et crée une route réactivé niveau back
+    check_user_active(user)
+
+    # TODO gérer la logique niveau front et crée une route réactivé niveau back
     response_data = user.to_dict()
     token = generate_token(user.id, user.role)
     response_data["token"] = token
