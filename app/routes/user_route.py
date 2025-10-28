@@ -9,7 +9,6 @@ from app.controllers.user_controller import (
 )
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
-admin_bp = Blueprint("admin_bp", __name__, url_prefix="/users/admin/")
 
 
 # region USER ROUTE
@@ -31,7 +30,7 @@ def login_user_route():
 # region ADMIN ROUTE
 
 
-@admin_bp.route("/", methods=["GET"])
+@user_bp.route("/admin/", methods=["GET"])
 @admin_required
 def get_all_users_route():
     return get_users_controller()

@@ -42,10 +42,9 @@ def create_app(config_class=None):
 
     # # Import & Enregistrement des blueprints
     # from app.routes.todo_routes import todo_bp
-    from app.routes.user_route import user_bp, admin_bp
+    from app.routes.user_route import user_bp
 
     # app.register_blueprint(user_bp)
     app.register_blueprint(user_bp)
-    app.register_blueprint(admin_bp)
 
     return app

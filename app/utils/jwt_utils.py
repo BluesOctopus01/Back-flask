@@ -3,8 +3,7 @@ import datetime
 from flask import current_app
 from functools import wraps
 from flask import request, jsonify
-from app.models import User
-
+from app.models import User, db
 
 # Generer un token JWT
 
@@ -40,8 +39,8 @@ def decode_token(token):
         )
         user_id = payload["user_id"]
         role = payload["role"]
-
-        user = User.query.get(user_id)
+        #!! db.session() => query.get()
+        user = db.session.get(User, user_id)
 
         if user:
             return user_id, role
