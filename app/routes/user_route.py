@@ -7,6 +7,7 @@ from app.controllers.user_controller import (
     get_users_controller,
     login_user_controller,
     get_user_controller,
+    update_user_controller,
 )
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
@@ -46,13 +47,15 @@ def get_all_users_route():
 # region UPDATE
 @jwt_required
 @user_bp.route("/update", methods=["PUT"])
-def update_user_profile(id):
-    pass
+def update_user_profile(user_id, role):
+    data = request.get_json()
+    return update_user_controller(user_id, data)
 
 
 @jwt_required
 @user_bp.route("/update_password", methods=["PATCH"])
 def update_user_psw(id):
+    # TODO
     pass
 
 
@@ -65,12 +68,14 @@ def update_user_psw(id):
 @user_bp.route("/delete", methods=["PATCH"])
 @jwt_required
 def soft_delete_user_self():
+    # TODO
     pass
 
 
 @user_bp.route("delete/<id>", methods=["PATCH"])
 @admin_required
 def soft_delete_user(id):
+    # TODO
     pass
 
 

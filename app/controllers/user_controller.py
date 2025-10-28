@@ -4,8 +4,9 @@ from app.services.user_service import (
     create_user,
     authenticate_user,
     fetch_a_user,
+    put_user,
 )
-from app.DTO.user_dto import UserCreateDTO
+from app.DTO.user_dto import UserCreateDTO, UserPatchDTO, UserUpdateDTO
 from flask import jsonify, request
 from app.models import db
 from app.utils.jwt_utils import generate_token
@@ -92,4 +93,38 @@ def login_user_controller(data):
     return jsonify(response_data), 200
 
 
+# endregion
+
+
+# region UPDATE
+def update_user_controller(user_id, data):
+    """EndPoint : PUT /users/update"""
+    dto, err = UserUpdateDTO.from_json(data)
+    if err:
+        return jsonify(err), 400
+    updated_user = put_user(
+        user_id,
+        dto.username,
+        dto.first_name,
+        dto.last_name,
+        dto.email,
+        dto.gender,
+        dto.phone_number,
+        dto.birthdate,
+        dto.country,
+        dto.address,
+        dto.user_bio,
+        dto.image,
+    )
+    if not updated_user:
+        return jsonify({"message": "user not found"}), 404
+    db.session.commit()
+    response_data = updated_user.to_dict()
+    return jsonify(response_data), 200
+
+
+# endregion
+
+
+# region DELETE
 # endregion

@@ -82,5 +82,48 @@ def authenticate_user(email: str, password: str) -> User | None:
 # endregion
 
 
+# region PUT
+def put_user(
+    user_id: int,
+    username: str,
+    first_name: str,
+    last_name: str,
+    email: str,
+    gender: str,
+    phone_number: str,
+    birth_date: str,
+    country: str,
+    address: str,
+    user_bio: str,
+    image: str,
+) -> User | None:
+    """Update a User then return it"""
+    user_update = fetch_a_user(user_id)
+    if not user_update:
+        return None
+
+    fields = {
+        "username": username,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "gender": gender,
+        "phone_number": phone_number,
+        "birth_date": birth_date,
+        "country": country,
+        "address": address,
+        "user_bio": user_bio,
+        "image": image,
+    }
+
+    for field, value in fields.items():
+        setattr(user_update, field, value)
+
+    return user_update
+
+
+# endregion
+
+
 # region DELETE
 # endregion
