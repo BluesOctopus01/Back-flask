@@ -5,6 +5,8 @@ from app.services.user_service import (
     authenticate_user,
     fetch_a_user,
     put_user,
+    check_password_service,
+    patch_password_user,
 )
 from app.DTO.user_dto import (
     UserCreateDTO,
@@ -133,7 +135,15 @@ def update_user_controller(user_id, data):
 
 
 def update_user_psw_controller(user_id, data):
-    
+    result = check_password_service(user_id, data["confirm_password"])
+    if not result:
+        return jsonify({"message": "invalid credentials"}), 400
+    dto, err = UserPasswordUpdateDTO.from_json(data)
+    if err:
+        return jsonify(err), 400
+    updated_user = patch_password_user(
+        dto.old_password, dto.new_password, dto.confirm_password
+    )
 
 
 # endregion

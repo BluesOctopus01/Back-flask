@@ -270,42 +270,44 @@ class UserPatchDTO:
 
 @dataclass
 class UserPasswordUpdateDTO:
-    """update the password of the user"""
+    """Check if the password"""
 
     old_password: str
     new_password: str
     confirm_password: str
 
+    @staticmethod
+    def from_json(
+        data: dict,
+    ) -> Tuple[Optional["UserPasswordUpdateDTO"], Optional[Dict]]:
+        if not data:
+            return None, {"error": "Missing updating password"}
 
-def from_json(data: dict) -> Tuple[Optional["UserPasswordUpdateDTO"], Optional[Dict]]:
-    if not data:
-        return None, {"error": "Missing updating password"}
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
 
-    old_password = data.get("old_password")
-    new_password = data.get("new_password")
-    confirm_password = data.get("confirm_password")
-
-    required_fields = {
-        "old_password": old_password,
-        "new_password": new_password,
-        "confirm_password": confirm_password,
-    }
-    for field, value in required_fields.items():
-        if not value:
-            return None, {"error": f"Missing field: {field}"}
-
-    if new_password and confirm_password and new_password != confirm_password:
-        return {"error": "password doesn't match"}
-
-    if not UserCreateDTO.is_valid_password(new_password):
-        return None, {
-            "error": (
-                "Password must be at least 8 characters, "
-                "contain uppercase, lowercase, a number, and a special character."
-            )
+        required_fields = {
+            "old_password": old_password,
+            "new_password": new_password,
+            "confirm_password": confirm_password,
         }
-    return UserPasswordUpdateDTO(
-        old_password=old_password,
-        new_password=new_password,
-        confirm_password=confirm_password,
-    )
+        for field, value in required_fields.items():
+            if not value:
+                return None, {"error": f"Missing field: {field}"}
+
+        if new_password and confirm_password and new_password != confirm_password:
+            return {"error": "password doesn't match"}
+
+        if not UserCreateDTO.is_valid_password(new_password):
+            return None, {
+                "error": (
+                    "Password must be at least 8 characters, "
+                    "contain uppercase, lowercase, a number, and a special character."
+                )
+            }
+        return UserPasswordUpdateDTO(
+            old_password=old_password,
+            new_password=new_password,
+            confirm_password=confirm_password,
+        )
