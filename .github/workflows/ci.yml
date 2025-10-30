@@ -100,6 +100,7 @@ jobs:
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          #patch | minor | major
           DEFAULT_BUMP: patch
           RELEASE_BRANCHES: main
           # L'objectif de notre action est de calculé la prochaine version
