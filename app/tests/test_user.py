@@ -194,3 +194,15 @@ def test_get_all_user(client):
 
 
 # endregion
+
+
+# region PUT/PATCH
+# def update_user
+
+# endregion
+
+
+# region DELETE/SOFT
+
+
+# endregion
