@@ -69,7 +69,8 @@ def update_user_psw(user_id, role):
 @user_bp.route("/delete", methods=["PATCH"])
 @jwt_required
 def soft_delete_user_self():
-    # TODO
+    # change password
+    # fezfe
     pass
 
 
