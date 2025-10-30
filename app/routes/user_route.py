@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 
-from app.utils.jwt_utils import jwt_required, admin_required, generate_token
+from app.utils.jwt_utils import jwt_required, admin_required
 
 from app.controllers.user_controller import (
     post_user_controller,
