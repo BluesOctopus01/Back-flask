@@ -3,7 +3,9 @@ from app.models.user_models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
-
+def check_password_service(user, password) -> bool:
+    """fetch a user, then check if the password are matching returning """
+    
 # region GET
 def fetch_a_user(id: int) -> User:
     """Return a single user with his id with only his public informations"""
@@ -79,6 +81,14 @@ def authenticate_user(email: str, password: str) -> User | None:
 
 
 # region PATCH
+def patch_password_user(user_id, old_password, new_password):
+    user = fetch_a_user(user_id)
+    if not user:
+        return None
+    if check_password_hash(user.password, old_password):
+
+
+
 # endregion
 
 

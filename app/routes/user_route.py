@@ -8,6 +8,7 @@ from app.controllers.user_controller import (
     login_user_controller,
     get_user_controller,
     update_user_controller,
+    update_user_psw_controller,
 )
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
@@ -54,9 +55,9 @@ def update_user_profile(user_id, role):
 
 @jwt_required
 @user_bp.route("/update_password", methods=["PATCH"])
-def update_user_psw(id):
-    # TODO
-    pass
+def update_user_psw(user_id, role):
+    data = request.get_json()
+    return update_user_psw_controller(user_id, data)
 
 
 # endregion

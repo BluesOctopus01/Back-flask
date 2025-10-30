@@ -6,7 +6,12 @@ from app.services.user_service import (
     fetch_a_user,
     put_user,
 )
-from app.DTO.user_dto import UserCreateDTO, UserPatchDTO, UserUpdateDTO
+from app.DTO.user_dto import (
+    UserCreateDTO,
+    UserPatchDTO,
+    UserUpdateDTO,
+    UserPasswordUpdateDTO,
+)
 from flask import jsonify, request
 from app.models import db
 from app.utils.jwt_utils import generate_token
@@ -121,6 +126,14 @@ def update_user_controller(user_id, data):
     db.session.commit()
     response_data = updated_user.to_dict()
     return jsonify(response_data), 200
+
+
+#!!!enfer
+# todo
+
+
+def update_user_psw_controller(user_id, data):
+    
 
 
 # endregion
