@@ -70,6 +70,7 @@ def update_user_psw(user_id, role):
 @jwt_required
 def soft_delete_user_self():
     # change password
+    # fezfe
     pass
 
 
