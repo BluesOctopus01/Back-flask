@@ -7,6 +7,7 @@ from app.services.user_service import (
     put_user,
     check_password_service,
     patch_password_user,
+    deactivate_user,
 )
 from app.DTO.user_dto import (
     UserCreateDTO,
@@ -146,4 +147,12 @@ def update_user_psw_controller(user_id, data):
 
 
 # region DELETE
+def soft_delete_user_controller(user_id):
+    user = deactivate_user(user_id)
+    if not user:
+        return jsonify({"message": "user not found"}), 404
+    response = user.to_dict()
+    return jsonify(response), 200
+
+
 # endregion

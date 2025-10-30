@@ -299,6 +299,37 @@ def test_patch_user_psw(client):
 
 
 # region DELETE/SOFT
+def test_soft_delete_user(client):
+    fake_user = {
+        "username": "Testeurfou13245",
+        "first_name": "TestFirst",
+        "last_name": "TestLast",
+        "password": "Test!123456",
+        "email": "test12345@gmail.com",
+        "gender": "M",
+        "phone_number": "047695872",
+        "birthdate": "1998-10-30",
+        "country": "Belgium",
+        "address": "Rue de feur, 56",
+        "user_bio": "Je test mon application tel un bon developper",
+        "image": "test.png",
+    }
+    # ajout de l'user dans la base
+    response_creation = client.post("/users/register", json=fake_user)
+    assert response_creation.status_code == 201
+
+    # connection à l'user
+    payload_login = {"password": "Test!123456", "email": "test12345@gmail.com"}
+    response_loading = client.post("/users/login", json=payload_login)
+    assert response_loading.status_code == 200
+
+    # récupération du token de connection
+    token = response_loading.get_json()["token"]
+    headers_delete = {"Authorization": f"Bearer {token}"}
+    # Vérification user not active
+    response_self_delete = client.patch("/users/delete", headers=headers_delete)
+    assert response_self_delete.status_code == 200
+    assert response_self_delete.get_json()["is_active"] == False
 
 
 # endregion

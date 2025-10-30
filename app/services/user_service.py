@@ -17,7 +17,7 @@ def check_password_service(user_id, password) -> User | None:
 # region GET
 def fetch_a_user(id: int) -> User | None:
     """Return a single user with his id with only his public informations"""
-    user = User.query.filter_by(id=id).first()
+    user: User = User.query.filter_by(id=id).first()
     if not user:
         return None
     return user
@@ -149,4 +149,14 @@ def put_user(
 
 
 # region DELETE
+def deactivate_user(user_id) -> User | None:
+    """fetch a user then deactivate it"""
+    user = fetch_a_user(user_id)
+    if not user:
+        return None
+    user.is_active = False
+    db.session.commit()
+    return user
+
+
 # endregion

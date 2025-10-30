@@ -9,6 +9,7 @@ from app.controllers.user_controller import (
     get_user_controller,
     update_user_controller,
     update_user_psw_controller,
+    soft_delete_user_controller,
 )
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/users/")
@@ -68,10 +69,8 @@ def update_user_psw(user_id, role):
 
 @user_bp.route("/delete", methods=["PATCH"])
 @jwt_required
-def soft_delete_user_self():
-    # change password
-    # fezfe
-    pass
+def soft_delete_user_self(user_id, role):
+    return soft_delete_user_controller(user_id)
 
 
 @user_bp.route("delete/<id>", methods=["PATCH"])
