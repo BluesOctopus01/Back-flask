@@ -46,15 +46,15 @@ def get_all_users_route():
 
 
 # region UPDATE
-@jwt_required
 @user_bp.route("/update", methods=["PUT"])
+@jwt_required
 def update_user_profile(user_id, role):
     data = request.get_json()
     return update_user_controller(user_id, data)
 
 
+@user_bp.route("/update/password", methods=["PATCH"])
 @jwt_required
-@user_bp.route("/update_password", methods=["PATCH"])
 def update_user_psw(user_id, role):
     data = request.get_json()
     return update_user_psw_controller(user_id, data)

@@ -135,7 +135,7 @@ class UserCreateDTO:
 #!! A modifier entierement patch et update
 @dataclass
 class UserUpdateDTO:
-    """Model to update an user"""
+    """Model to update a user"""
 
     username: str
     first_name: str
@@ -154,26 +154,33 @@ class UserUpdateDTO:
         if not data:
             return None, {"error": "Missing data for updating user"}
 
-        dto, err = UserCreateDTO(data)
-        if err:
-            return None, err
+        try:
+            # Conversion explicite de la date si nécessaire
+            birthdate_str = data.get("birthdate")
+            birthdate_obj = (
+                datetime.strptime(birthdate_str, "%Y-%m-%d").date()
+                if isinstance(birthdate_str, str)
+                else birthdate_str
+            )
 
-        return (
-            UserUpdateDTO(
-                username=dto.username,
-                first_name=dto.first_name,
-                last_name=dto.last_name,
-                email=dto.email,
-                gender=dto.gender,
-                phone_number=dto.phone_number,
-                birthdate=dto.birthdate,
-                country=dto.country,
-                address=dto.address,
-                user_bio=dto.user_bio,
-                image=dto.image,
-            ),
-            None,
-        )
+            dto = UserUpdateDTO(
+                username=data["username"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                email=data["email"],
+                gender=data["gender"],
+                phone_number=data["phone_number"],
+                birthdate=birthdate_obj,
+                country=data["country"],
+                address=data["address"],
+                user_bio=data.get("user_bio", ""),
+                image=data.get("image", ""),
+            )
+            return dto, None
+        except KeyError as e:
+            return None, {"error": f"Missing field: {str(e)}"}
+        except ValueError as e:
+            return None, {"error": f"Invalid value: {str(e)}"}
 
 
 #!! A modifier entierement patch et update
@@ -297,7 +304,7 @@ class UserPasswordUpdateDTO:
                 return None, {"error": f"Missing field: {field}"}
 
         if new_password and confirm_password and new_password != confirm_password:
-            return {"error": "password doesn't match"}
+            return None, {"error": "password doesn't match"}
 
         if not UserCreateDTO.is_valid_password(new_password):
             return None, {
@@ -306,8 +313,11 @@ class UserPasswordUpdateDTO:
                     "contain uppercase, lowercase, a number, and a special character."
                 )
             }
-        return UserPasswordUpdateDTO(
-            old_password=old_password,
-            new_password=new_password,
-            confirm_password=confirm_password,
+        return (
+            UserPasswordUpdateDTO(
+                old_password=old_password,
+                new_password=new_password,
+                confirm_password=confirm_password,
+            ),
+            None,
         )

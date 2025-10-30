@@ -197,7 +197,103 @@ def test_get_all_user(client):
 
 
 # region PUT/PATCH
-# def update_user
+def test_put_user(client):
+    # création payload ajout user
+    fake_user = {
+        "username": "Testeurfou13245",
+        "first_name": "TestFirst",
+        "last_name": "TestLast",
+        "password": "Test!123456",
+        "email": "test12345@gmail.com",
+        "gender": "M",
+        "phone_number": "047695872",
+        "birthdate": "1998-10-30",
+        "country": "Belgium",
+        "address": "Rue de feur, 56",
+        "user_bio": "Je test mon application tel un bon developper",
+        "image": "test.png",
+    }
+    # ajout de l'user dans la base
+    response_creation = client.post("/users/register", json=fake_user)
+    assert response_creation.status_code == 201
+
+    # connection à l'user
+    payload_login = {"password": "Test!123456", "email": "test12345@gmail.com"}
+    response_loading = client.post("/users/login", json=payload_login)
+    assert response_loading.status_code == 200
+
+    # récupération du token de connection
+    token = response_loading.get_json()["token"]
+    headers_update = {"Authorization": f"Bearer {token}"}
+
+    # modification de l'user
+    payload_update = {
+        "username": "DevNinja2025",
+        "first_name": "Alexandra",
+        "last_name": "Durand",
+        "email": "alex.durand.dev@gmail.com",
+        "gender": "F",
+        "phone_number": "0478 123 456",
+        "birthdate": "1995-04-15",
+        "country": "France",
+        "address": "123 Avenue des Codeurs, 75000 Paris",
+        "user_bio": "Développeur passionné par l'IA, le clean code et les croissants.",
+        "image": "profile_updated.png",
+    }
+    # envoie du tout
+    response_update = client.put(
+        "/users/update", json=payload_update, headers=headers_update
+    )
+    assert response_update.status_code == 200
+
+    # test si l'authentification renvoie bien une erreur maintenannt que le profil a changé
+    payload_login2 = {"password": "Test!123456", "email": "test12345@gmail.com"}
+    response_loading2 = client.post("/users/login", json=payload_login2)
+    assert response_loading2.status_code == 404
+
+
+def test_patch_user_psw(client):
+    # création payload ajout user
+    fake_user = {
+        "username": "Testeurfou13245",
+        "first_name": "TestFirst",
+        "last_name": "TestLast",
+        "password": "Test!123456",
+        "email": "test12345@gmail.com",
+        "gender": "M",
+        "phone_number": "047695872",
+        "birthdate": "1998-10-30",
+        "country": "Belgium",
+        "address": "Rue de feur, 56",
+        "user_bio": "Je test mon application tel un bon developper",
+        "image": "test.png",
+    }
+    # ajout de l'user dans la base
+    response_creation = client.post("/users/register", json=fake_user)
+    assert response_creation.status_code == 201
+
+    # connection à l'user
+    payload_login = {"password": "Test!123456", "email": "test12345@gmail.com"}
+    response_loading = client.post("/users/login", json=payload_login)
+    assert response_loading.status_code == 200
+
+    # récupération du token de connection
+    token = response_loading.get_json()["token"]
+    headers_update = {"Authorization": f"Bearer {token}"}
+
+    # création du payload psw
+    payload_psw = {
+        "old_password": "Test!123456",
+        "new_password": "Test!654321",
+        "confirm_password": "Test!654321",
+    }
+
+    # appel de la méthode de changemenet de psw
+    response_update_psw = client.patch(
+        "/users/update/password", json=payload_psw, headers=headers_update
+    )
+    assert response_update_psw.status_code == 200
+
 
 # endregion
 
