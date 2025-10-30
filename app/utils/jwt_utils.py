@@ -63,7 +63,6 @@ def jwt_required(f):
             # Verification des valeurs du header
             if len(parts) == 2 and parts[0] == "Bearer":
                 token = parts[1]
-                print(f"Token found: {token}")
 
         # Si le token est absent on renvoie une erreur 401 ( unauthorized )
         if not token:

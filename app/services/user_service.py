@@ -4,8 +4,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
 
+def check_password_service(user_id, password) -> User | None:
+    """fetch a user, then check if the password are matching returning the User or None"""
+    user = fetch_a_user(user_id)
+    if not user:
+        return None
+    if check_password_hash(user.password, password):
+        return user
+    return None
+
+
 # region GET
-def fetch_a_user(id: int) -> User:
+def fetch_a_user(id: int) -> User | None:
     """Return a single user with his id with only his public informations"""
     user = User.query.filter_by(id=id).first()
     if not user:
@@ -57,6 +67,8 @@ def create_user(
         image=image,
         role=role,
     )
+    db.session.add(new_user)
+    db.session.commit()
     return new_user
 
 
@@ -79,6 +91,17 @@ def authenticate_user(email: str, password: str) -> User | None:
 
 
 # region PATCH
+def patch_password_user(user_id, new_password):
+    """generate an hashed password and return user if success"""
+    user = fetch_a_user(user_id)
+    if not user:
+        return None
+    hashed_password = generate_password_hash(new_password)
+    user.password = hashed_password
+    db.session.commit()
+    return user
+
+
 # endregion
 
 
@@ -118,7 +141,7 @@ def put_user(
 
     for field, value in fields.items():
         setattr(user_update, field, value)
-
+    db.session.commit()
     return user_update
 
 

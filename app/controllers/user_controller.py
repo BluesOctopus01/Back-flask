@@ -5,8 +5,15 @@ from app.services.user_service import (
     authenticate_user,
     fetch_a_user,
     put_user,
+    check_password_service,
+    patch_password_user,
 )
-from app.DTO.user_dto import UserCreateDTO, UserPatchDTO, UserUpdateDTO
+from app.DTO.user_dto import (
+    UserCreateDTO,
+    UserPatchDTO,
+    UserUpdateDTO,
+    UserPasswordUpdateDTO,
+)
 from flask import jsonify, request
 from app.models import db
 from app.utils.jwt_utils import generate_token
@@ -68,8 +75,6 @@ def post_user_controller(data):
         dto.image,
     )
 
-    db.session.add(new_user)
-    db.session.commit()
     response_data = new_user.to_dict()
     return jsonify(response_data), 201
 
@@ -118,7 +123,21 @@ def update_user_controller(user_id, data):
     )
     if not updated_user:
         return jsonify({"message": "user not found"}), 404
-    db.session.commit()
+
+    response_data = updated_user.to_dict()
+    return jsonify(response_data), 200
+
+
+def update_user_psw_controller(user_id, data):
+    result = check_password_service(user_id, data["old_password"])
+    if not result:
+        return jsonify({"message": "invalid credentials"}), 400
+    dto, err = UserPasswordUpdateDTO.from_json(data)
+    if err:
+        return jsonify(err), 400
+    updated_user = patch_password_user(user_id, dto.new_password)
+    if not updated_user:
+        return jsonify({"error": "Error hashing password"}), 400
     response_data = updated_user.to_dict()
     return jsonify(response_data), 200
 

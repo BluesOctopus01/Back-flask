@@ -132,9 +132,10 @@ class UserCreateDTO:
         )
 
 
+#!! A modifier entierement patch et update
 @dataclass
 class UserUpdateDTO:
-    """Model to update an user"""
+    """Model to update a user"""
 
     username: str
     first_name: str
@@ -153,29 +154,36 @@ class UserUpdateDTO:
         if not data:
             return None, {"error": "Missing data for updating user"}
 
-        dto, err = UserCreateDTO(data)
-        if err:
-            return None, err
+        try:
+            # Conversion explicite de la date si nécessaire
+            birthdate_str = data.get("birthdate")
+            birthdate_obj = (
+                datetime.strptime(birthdate_str, "%Y-%m-%d").date()
+                if isinstance(birthdate_str, str)
+                else birthdate_str
+            )
 
-        return (
-            UserUpdateDTO(
-                username=dto.username,
-                first_name=dto.first_name,
-                last_name=dto.last_name,
-                email=dto.email,
-                gender=dto.gender,
-                phone_number=dto.phone_number,
-                birthdate=dto.birthdate,
-                country=dto.country,
-                address=dto.address,
-                user_bio=dto.user_bio,
-                image=dto.image,
-            ),
-            None,
-        )
+            dto = UserUpdateDTO(
+                username=data["username"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                email=data["email"],
+                gender=data["gender"],
+                phone_number=data["phone_number"],
+                birthdate=birthdate_obj,
+                country=data["country"],
+                address=data["address"],
+                user_bio=data.get("user_bio", ""),
+                image=data.get("image", ""),
+            )
+            return dto, None
+        except KeyError as e:
+            return None, {"error": f"Missing field: {str(e)}"}
+        except ValueError as e:
+            return None, {"error": f"Invalid value: {str(e)}"}
 
 
-#!! A modifier entierement patch
+#!! A modifier entierement patch et update
 @dataclass
 class UserPatchDTO:
     """Model to update partially a user"""
@@ -183,7 +191,6 @@ class UserPatchDTO:
     username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    password: Optional[str] = None
     email: Optional[str] = None
     gender: Optional[str] = None
     phone_number: Optional[str] = None
@@ -195,11 +202,6 @@ class UserPatchDTO:
 
     VALID_GENDERS = {"M", "F", "U"}
     EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[a-zA-Z0-9]+$")
-    PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$")
-
-    @staticmethod
-    def is_valid_password(password: str) -> bool:
-        return bool(UserPatchDTO.PASSWORD_REGEX.match(password))
 
     @staticmethod
     def from_json(data: dict) -> Tuple[Optional["UserPatchDTO"], Optional[Dict]]:
@@ -275,4 +277,47 @@ class UserPatchDTO:
 
 @dataclass
 class UserPasswordUpdateDTO:
-    pass
+    """Check if the password"""
+
+    old_password: str
+    new_password: str
+    confirm_password: str
+
+    @staticmethod
+    def from_json(
+        data: dict,
+    ) -> Tuple[Optional["UserPasswordUpdateDTO"], Optional[Dict]]:
+        if not data:
+            return None, {"error": "Missing updating password"}
+
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
+
+        required_fields = {
+            "old_password": old_password,
+            "new_password": new_password,
+            "confirm_password": confirm_password,
+        }
+        for field, value in required_fields.items():
+            if not value:
+                return None, {"error": f"Missing field: {field}"}
+
+        if new_password and confirm_password and new_password != confirm_password:
+            return None, {"error": "password doesn't match"}
+
+        if not UserCreateDTO.is_valid_password(new_password):
+            return None, {
+                "error": (
+                    "Password must be at least 8 characters, "
+                    "contain uppercase, lowercase, a number, and a special character."
+                )
+            }
+        return (
+            UserPasswordUpdateDTO(
+                old_password=old_password,
+                new_password=new_password,
+                confirm_password=confirm_password,
+            ),
+            None,
+        )
