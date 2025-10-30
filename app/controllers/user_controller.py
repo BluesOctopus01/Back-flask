@@ -8,6 +8,7 @@ from app.services.user_service import (
     check_password_service,
     patch_password_user,
     deactivate_user,
+    delete_user,
 )
 from app.DTO.user_dto import (
     UserCreateDTO,
@@ -153,6 +154,13 @@ def soft_delete_user_controller(user_id):
         return jsonify({"message": "user not found"}), 404
     response = user.to_dict()
     return jsonify(response), 200
+
+
+def hard_delete_user_controller(user_id):
+    user = delete_user(user_id)
+    if not user:
+        return jsonify({"message": "user not found"}), 404
+    return jsonify({"message": "user deleted"}), 200
 
 
 # endregion

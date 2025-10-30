@@ -159,4 +159,14 @@ def deactivate_user(user_id) -> User | None:
     return user
 
 
+def delete_user(user_id) -> bool:
+    """fetch a user then delete it, if it succed send a True else False"""
+    user = fetch_a_user(user_id)
+    if not user:
+        return False
+    db.session.delete(user)
+    db.session.commit()
+    return True
+
+
 # endregion
