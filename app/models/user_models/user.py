@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from app.models import db
 from datetime import datetime, timezone
+from app.models.deck import Deck
 
 
 class User(db.Model, UserMixin):
@@ -63,12 +64,11 @@ class User(db.Model, UserMixin):
             ),
         }
 
-    def to_public_dict(self) -> dict:
+    def to_summary_dict(self) -> dict:
+        """Return the summary of a user"""
         return {
             "id": self.id,
             "username": self.username,
-            "user_bio": self.user_bio,
-            "image": self.image,
-            "country": self.country,
-            "decks": [deck.to_summary_dict() for deck in self.decks],
+            "first_name": self.first_name,
+            "last_name": self.last_name,
         }
