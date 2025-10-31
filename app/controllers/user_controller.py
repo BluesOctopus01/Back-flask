@@ -17,7 +17,6 @@ from app.DTO.user_dto import (
     UserPasswordUpdateDTO,
 )
 from flask import jsonify, request
-from app.models import db
 from app.utils.jwt_utils import generate_token
 
 
@@ -39,8 +38,8 @@ def get_user_controller(id: int):
 
     check_user_active(user)
 
-    user_public = user.to_public_dict()
-    return jsonify(user_public), 200
+    user = user.to_dict()
+    return jsonify(user), 200
 
 
 def get_users_controller():
