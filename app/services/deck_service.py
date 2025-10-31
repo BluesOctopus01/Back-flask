@@ -34,6 +34,13 @@ def post_deck(
 
 
 # region GET
+def get_deck_user(user_id) -> list[Deck] | None:
+    """Return a list of Decks from a user, or None if none found"""
+    decks = Deck.query.filter_by(creator_id=user_id).all()
+    if not decks:
+        return None
+    return decks
+
 
 # endregion
 

@@ -1,5 +1,5 @@
 from app.models.deck import Deck
-from app.services.deck_service import post_deck
+from app.services.deck_service import post_deck, get_deck_user
 from app.services.user_service import fetch_a_user
 from app.DTO.deck_dto import DeckCreateDTO
 from flask import jsonify, request
@@ -20,8 +20,16 @@ def create_deck_controller(user_id, data):
     return jsonify(response_data), 201
 
 
-def get_user_decks_controller():
-    pass
+def get_user_decks_controller(user_id):
+    creator = fetch_a_user(user_id)
+    if not creator:
+        return jsonify({"message": "user not found"}), 404
+
+    decks = get_deck_user(user_id)
+    if not decks:
+        return jsonify({"message": "decks not found"}), 404
+    decks_dict = [deck.to_dict() for deck in decks]
+    return jsonify(decks_dict), 200
 
 
 def get_deck_controller():
