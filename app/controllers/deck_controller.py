@@ -33,13 +33,13 @@ def get_user_decks_controller(user_id):
 
 
 # todo retravailler ca pour une meilleure logique métier
-def get_deck_controller(user_id, deck_id, data):
-    deck = get_deck(deck_id, user_id)
-    if not deck:
-        return jsonify({"message": "deck not found"}), 404
-    owner = is_owner_deck(user_id, deck_id)
-    if not owner:
-        pass
+# def get_deck_controller(user_id, deck_id, data):
+#     deck = get_deck(deck_id, user_id)
+#     if not deck:
+#         return jsonify({"message": "deck not found"}), 404
+#     owner = is_owner_deck(user_id, deck_id)
+#     if not owner:
+#         pass
 
 
 def update_deck_controller():
