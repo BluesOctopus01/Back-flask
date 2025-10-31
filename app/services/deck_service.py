@@ -4,6 +4,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
 
+def is_owner_deck(user_id: int, deck_id: int) -> bool:
+    return deck_id == user_id
+
+
+def is_accessible(deck, data):
+    if deck.access == "PUBLIC":
+        return True
+    if deck.access == "PRIVATE":
+        return False
+    if deck.access == "PROTECTED":
+        return deck.access_key == data.get("access_key")
+    return False
+
+
 # region POST
 def post_deck(
     name: str,
@@ -34,12 +48,19 @@ def post_deck(
 
 
 # region GET
-def get_deck_user(user_id) -> list[Deck] | None:
+def get_deck_user(user_id: int) -> list[Deck] | None:
     """Return a list of Decks from a user, or None if none found"""
     decks = Deck.query.filter_by(creator_id=user_id).all()
     if not decks:
         return None
     return decks
+
+
+def get_deck(deck_id: int, user_id: int) -> Deck | None:
+    """Return a Deck from a deck id, or None if none found"""
+    deck: Deck = Deck.query.filter_by(deck_id=deck_id).first()
+    if not deck:
+        return None
 
 
 # endregion

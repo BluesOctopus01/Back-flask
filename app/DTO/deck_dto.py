@@ -39,11 +39,11 @@ class DeckCreateDTO:
             return None, {
                 "error": f"Invalid access. Must be one of {DeckCreateDTO.VALID_ACCESS}"
             }
-        if access != "PUBLIC":
+        if access == "PROTECTED":
             if access_key == None:
-                return None, {
-                    "error": f"Private and protected decks must have a valid access_key"
-                }
+                return None, {"error": f"protected decks must have a valid access_key"}
+        if access != "PROTECTED":
+            access_key = None
         # verify image format
         if not VerifyUtils.is_valid_image(image):
             return None, {"error": "image format invalid"}
