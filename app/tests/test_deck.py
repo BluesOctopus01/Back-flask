@@ -52,6 +52,14 @@ def test_get_decks(client, user_with_decks):
 def test_get_deck_controller(client, user_with_decks):
     response = client.get("/users/decks/1", headers=user_with_decks)
     assert response.status_code == 200
-    print(response.get_json())
     response_wrong = client.get("/users/deck/999", headers=user_with_decks)
     assert response_wrong.status_code == 404
+
+
+def test_update_deck_controller(client, user_with_decks):
+    response = client.patch(
+        "users/decks/1", json=PAYLOAD_UPDATE, headers=user_with_decks
+    )
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["name"] == "Biologie moléculaire"

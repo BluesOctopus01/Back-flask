@@ -4,9 +4,10 @@ from app.services.deck_service import (
     get_deck_user,
     get_deck,
     get_deck_search,
+    patch_deck_user,
 )
 from app.services.user_service import fetch_a_user
-from app.DTO.deck_dto import DeckCreateDTO
+from app.DTO.deck_dto import DeckCreateDTO, DeckPatchDTO
 from flask import jsonify, request
 
 
@@ -58,8 +59,29 @@ def get_deck_controller(user_id, deck_id, data_access):
     return jsonify(deck_response), 200
 
 
-def update_deck_controller():
-    pass
+def update_deck_controller(user_id, deck_id, data):
+    creator = fetch_a_user(user_id)
+    if not creator:
+        return jsonify({"message": "user not found"}), 404
+
+    deck = get_deck(deck_id)
+    if not deck:
+        return jsonify({"message": "deck not found"}), 404
+
+    if deck.creator_id != user_id:
+        return jsonify({"message": "Unauthorized"}), 401
+
+    dto, err = DeckPatchDTO.from_json(data)
+    if err:
+        return jsonify(err), 400
+    updated_deck = patch_deck_user(
+        deck_id, dto.name, dto.bio, dto.access, dto.image, dto.access_key
+    )
+    if not updated_deck:
+        return jsonify({"error": "Unknown error"}), 501
+
+    response_data = deck.to_dict()
+    return jsonify(response_data), 200
 
 
 def delete_deck_controller():

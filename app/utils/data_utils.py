@@ -83,3 +83,11 @@ PAYLOAD_MIXED_CREATORS = [
         "access_key": None,
     },
 ]
+PAYLOAD_UPDATE = {
+    "creator_id": 1,
+    "name": "Biologie moléculaire",
+    "bio": "Deck pour réviser les bases de la biologie moléculaire.",
+    "access": "PUBLIC",
+    "image": "moléculaire._deck.png",
+    "access_key": "Test1234!",
+}

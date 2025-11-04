@@ -60,3 +60,54 @@ class DeckCreateDTO:
             ),
             None,
         )
+
+
+@dataclass
+class DeckPatchDTO:
+    """Model to update a deck"""
+
+    name: Optional[str] = None
+    bio: Optional[str] = None
+    access: Optional[str] = None
+    image: Optional[str] = None
+    access_key: Optional[str] = None
+
+    VALID_ACCESS = {"PUBLIC", "PRIVATE", "PROTECTED"}
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["DeckPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a DeckPatchDTO"""
+
+        if not data:
+            return None, {"error": "No data provided"}
+
+        new_name = (data.get("name") or "").strip().capitalize()
+        new_bio = (data.get("bio") or "").strip()
+        new_access = (data.get("access") or "").strip()
+        new_image = (data.get("image") or "").strip()
+        new_access_key = (data.get("access_key") or "").strip()
+
+        if new_access and new_access not in DeckPatchDTO.VALID_ACCESS:
+            return None, {
+                "error": f"Invalid access. Must be one of {DeckPatchDTO.VALID_ACCESS}"
+            }
+
+        if new_access == "PROTECTED" and not new_access_key:
+            return None, {"error": "Protected decks must have a valid access_key"}
+
+        if new_access != "PROTECTED":
+            new_access_key = None
+
+        if new_image and not VerifyUtils.is_valid_image(new_image):
+            return None, {"error": "Image format invalid"}
+
+        return (
+            DeckPatchDTO(
+                name=new_name,
+                bio=new_bio,
+                access=new_access,
+                image=new_image,
+                access_key=new_access_key,
+            ),
+            None,
+        )
