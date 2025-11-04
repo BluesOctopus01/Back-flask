@@ -88,6 +88,39 @@ def get_deck(deck_id: int) -> Deck | None:
 
 
 # region UPDATE
+def patch_deck_user(
+    deck_id: int,
+    name: str | None,
+    bio: str | None,
+    access: str | None,
+    image: str | None,
+    access_key: str | None,
+) -> Deck | None:
+    """Patch a deck with informations from User, if there is no information the old one is kept"""
+    deck = get_deck(deck_id)
+    if not deck:
+        return None
+    deck.last_modification_at = datetime.now(timezone.utc)
+
+    if name is not None:
+        deck.name = name
+
+    if bio is not None:
+        deck.bio = bio
+
+    if access is not None:
+        deck.access = access
+
+    if image is not None:
+        deck.image = image
+
+    if access_key is not None:
+        deck.access_key = generate_password_hash(access_key)
+
+    db.session.commit()
+
+    return deck
+
 
 # endregion
 

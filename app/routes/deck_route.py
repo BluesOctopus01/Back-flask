@@ -37,11 +37,11 @@ def get_deck(user_id, role, deck_id):
 # todo get admin
 
 
-# @deck_bp.route("/<deck_id>", methods=["PUT"])
-# @jwt_required
-# def update_deck(user_id, role, deck_id):
-#     data = request.get_json()
-#     return update_deck_controller(user_id, deck_id, data)
+@deck_bp.route("/<int:deck_id>", methods=["PATCH"])
+@jwt_required
+def update_deck(user_id, role, deck_id):
+    data = request.get_json()
+    return update_deck_controller(user_id, deck_id, data)
 
 
 # @deck_bp.route("/<deck_id>", methods=["DELETE"])
