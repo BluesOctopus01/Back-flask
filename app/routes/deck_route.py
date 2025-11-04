@@ -5,6 +5,7 @@ from app.controllers.deck_controller import (
     delete_deck_controller,
     update_deck_controller,
     get_user_decks_controller,
+    get_deck_controller,
 )
 
 deck_bp = Blueprint("deck_bp", __name__, url_prefix="/users/decks")
@@ -23,28 +24,27 @@ def get_decks(user_id, role):
     return get_user_decks_controller(user_id)
 
 
-# @deck_bp.route("/<deck_id: int>", methods=["GET"])
-# @jwt_required
-# def get_deck(user_id, role, deck_id):
-#     data = request.get_json()
-#     return get_deck_controller(user_id, deck_id, data)
-# verifier si le deck appartient a l'user
-# si non, verifier l'accessibilité du deck
-# si protected, verifier le mot de passer pour le voir
-# verifier si l'user est admin, .
+@deck_bp.route("/<int:deck_id>", methods=["GET"])
+@jwt_required
+def get_deck(user_id, role, deck_id):
+    # mot de passe optionnel, puisque la route peut etre publique
+    #! Ne jamais donner du json dans du GET, c'est pour ca que ca ne fonctionnait pas
+    access_key = request.args.get("access_key")
+    data_access = {"access_key": access_key} if access_key else {}
+    return get_deck_controller(user_id, deck_id, data_access)
 
 
 # todo get admin
 
 
-@deck_bp.route("/<deck_id>", methods=["PUT"])
-@jwt_required
-def update_deck(user_id, role, deck_id):
-    data = request.get_json()
-    return update_deck_controller(user_id, deck_id, data)
+# @deck_bp.route("/<deck_id>", methods=["PUT"])
+# @jwt_required
+# def update_deck(user_id, role, deck_id):
+#     data = request.get_json()
+#     return update_deck_controller(user_id, deck_id, data)
 
 
-@deck_bp.route("/<deck_id>", methods=["DELETE"])
-@jwt_required
-def delete_deck(user_id, role, deck_id):
-    return delete_deck_controller(user_id, deck_id)
+# @deck_bp.route("/<deck_id>", methods=["DELETE"])
+# @jwt_required
+# def delete_deck(user_id, role, deck_id):
+#     return delete_deck_controller(user_id, deck_id)

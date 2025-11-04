@@ -1,21 +1,8 @@
 from datetime import datetime, timezone
+from typing import Optional, Tuple, Dict
 from app.models.deck import Deck
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
-
-
-def is_owner_deck(user_id: int, deck_id: int) -> bool:
-    return deck_id == user_id
-
-
-def is_accessible(deck, data):
-    if deck.access == "PUBLIC":
-        return True
-    if deck.access == "PRIVATE":
-        return False
-    if deck.access == "PROTECTED":
-        return deck.access_key == data.get("access_key")
-    return False
 
 
 # region POST
@@ -43,11 +30,44 @@ def post_deck(
 
     return new_deck
 
+    # endregion
 
-# endregion
+    # region GET
 
 
-# region GET
+def get_deck_search(
+    user_id: int, deck_id: int, data_access: str
+) -> Tuple[Optional["Deck"], Optional[Dict]]:
+    """Return a deck and None or None and an error"""
+
+    deck: Deck = get_deck(deck_id)
+    # Deck introuvable
+    if not deck:
+        return None, {"error": "Deck not found"}
+
+    # Si l'utilisateur est le créateur
+    if deck.creator_id == user_id:
+        return deck, None
+
+    # Accès public
+    if deck.access == "PUBLIC":
+        return deck, None
+
+    # Accès protégé : mot de passe requis
+    if deck.access == "PROTECTED":
+        if check_password_hash(deck.access_key, data_access["access_key"]):
+            return deck, None
+        else:
+            return None, {"error": "Invalid credentials"}
+
+    # Accès privé : refusé
+    if deck.access == "PRIVATE":
+        return None, {"error": "Unauthorized"}
+
+    # Cas inattendu
+    return None, {"error": "Unknown access type"}
+
+
 def get_deck_user(user_id: int) -> list[Deck] | None:
     """Return a list of Decks from a user, or None if none found"""
     decks = Deck.query.filter_by(creator_id=user_id).all()
@@ -56,11 +76,12 @@ def get_deck_user(user_id: int) -> list[Deck] | None:
     return decks
 
 
-def get_deck(deck_id: int, user_id: int) -> Deck | None:
+def get_deck(deck_id: int) -> Deck | None:
     """Return a Deck from a deck id, or None if none found"""
-    deck: Deck = Deck.query.filter_by(deck_id=deck_id).first()
+    deck: Deck = Deck.query.filter_by(id=deck_id).first()
     if not deck:
         return None
+    return deck
 
 
 # endregion
