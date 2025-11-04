@@ -9,9 +9,9 @@ class Deck(db.Model):
     name = db.Column(db.String(50), nullable=False)
     bio = db.Column(db.String(100), nullable=True, default="")
 
-    PUBLIC = "public"
-    PRIVATE = "private"
-    PROTECTED = "protected"
+    PUBLIC = "PUBLIC"
+    PRIVATE = "PRIVATE"
+    PROTECTED = "PROTECTED"
     ACCESS_CHOICES = [PUBLIC, PRIVATE, PROTECTED]
 
     access = db.Column(db.String(10), default=PUBLIC, nullable=False)
@@ -19,7 +19,7 @@ class Deck(db.Model):
 
     image = db.Column(db.String(200), nullable=True)
 
-    access_key = db.Column(db.String(150), nullable=True, default="")
+    access_key = db.Column(db.String(250), nullable=True, default="")
     is_active = db.Column(db.Boolean, default=True)
 
     creator_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)

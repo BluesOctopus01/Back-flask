@@ -40,7 +40,6 @@ def test_create_user(client):
     data = response.get_json()["username"]
     assert data == "Testeurfou13245"
 
-    # print(data["token"])
     # token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjE1NzIyNTgsImlhdCI6MTc2MTU2ODY1OH0.2Q4TFp7-Q5GeLOAfugR5ZP20K8SXwXgSMoDgphk3CrI
 
 

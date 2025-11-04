@@ -41,10 +41,17 @@ def test_create_deck(client, auth_headers):
         "/users/decks/create", json=PAYLOAD_DECK, headers=auth_headers
     )
     assert response_deck_creating.status_code == 201
-    print(response_deck_creating.get_json())
 
 
 def test_get_decks(client, user_with_decks):
     response = client.get("/users/decks/", headers=user_with_decks)
     assert response.status_code == 200
     assert len(response.get_json()) == 4
+
+
+def test_get_deck_controller(client, user_with_decks):
+    response = client.get("/users/decks/1", headers=user_with_decks)
+    assert response.status_code == 200
+    print(response.get_json())
+    response_wrong = client.get("/users/deck/999", headers=user_with_decks)
+    assert response_wrong.status_code == 404
