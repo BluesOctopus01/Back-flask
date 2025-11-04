@@ -34,9 +34,6 @@ def get_deck(user_id, role, deck_id):
     return get_deck_controller(user_id, deck_id, data_access)
 
 
-# todo get admin
-
-
 @deck_bp.route("/<int:deck_id>", methods=["PATCH"])
 @jwt_required
 def update_deck(user_id, role, deck_id):
@@ -44,7 +41,10 @@ def update_deck(user_id, role, deck_id):
     return update_deck_controller(user_id, deck_id, data)
 
 
-# @deck_bp.route("/<deck_id>", methods=["DELETE"])
-# @jwt_required
-# def delete_deck(user_id, role, deck_id):
-#     return delete_deck_controller(user_id, deck_id)
+@deck_bp.route("/<int:deck_id>", methods=["DELETE"])
+@jwt_required
+def delete_deck(user_id, role, deck_id):
+    return delete_deck_controller(user_id, deck_id)
+
+
+# todo admin méthode

@@ -5,6 +5,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
 
+# todo faire une méthode
+
+# creator = fetch_a_user(user_id)
+# if not creator:
+#     return jsonify({"message": "user not found"}), 404
+
+# deck = get_deck(deck_id)
+# if not deck:
+#     return jsonify({"message": "deck not found"}), 404
+
+# if deck.creator_id != user_id:
+#     return jsonify({"message": "Unauthorized"}), 401
+
+
 # region POST
 def post_deck(
     name: str,
@@ -126,5 +140,14 @@ def patch_deck_user(
 
 
 # region DELETE/SOFT
+def delete_deck_service(deck_id) -> bool:
+    deck_delete = get_deck(deck_id)
+    if not deck_delete:
+        return False
+
+    db.session.delete(deck_delete)
+    db.session.commit()
+    return True
+
 
 # endregion

@@ -5,6 +5,7 @@ from app.services.deck_service import (
     get_deck,
     get_deck_search,
     patch_deck_user,
+    delete_deck_service,
 )
 from app.services.user_service import fetch_a_user
 from app.DTO.deck_dto import DeckCreateDTO, DeckPatchDTO
@@ -84,5 +85,19 @@ def update_deck_controller(user_id, deck_id, data):
     return jsonify(response_data), 200
 
 
-def delete_deck_controller():
-    pass
+def delete_deck_controller(user_id, deck_id):
+    creator = fetch_a_user(user_id)
+    if not creator:
+        return jsonify({"message": "user not found"}), 404
+
+    deck = get_deck(deck_id)
+    if not deck:
+        return jsonify({"message": "deck not found"}), 404
+
+    if deck.creator_id != user_id:
+        return jsonify({"message": "Unauthorized"}), 401
+
+    deck_delete = delete_deck_service(deck_id)
+    if not deck_delete:
+        return jsonify({"message": "unexpected error"}), 500
+    return jsonify({"message": "deck deleted successfully"}), 200
