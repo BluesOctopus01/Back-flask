@@ -8,7 +8,7 @@ card_bp = Blueprint("card_bp", __name__, url_prefix="/users/decks/cards")
 
 # todo possibilité d'automatiser avec un middleware pour éviter de rappeler la route a chaque fois
 # region POST
-@deck_bp.route("/<id:deck_id>/cards", methods=["POST"])
+@deck_bp.route("/<int:deck_id>/cards", methods=["POST"])
 @jwt_required
 def create_card(user_id, role, deck_id):
     data = request.get_json()

@@ -28,7 +28,7 @@ def create_card_controller(user_id, deck_id, data):
         return jsonify({"message": "Unauthorized"}), 401
 
     data["deck_id"] = deck_id
-    #todo centraliser toute la logique pour créer un service
+    # todo centraliser toute la logique pour créer un service
     # todo en dernier, le plus compliqué
     if data["card_type"] == "qcm":
         dto, err = QaCreateDTO.from_json(data)
@@ -46,7 +46,8 @@ def create_card_controller(user_id, deck_id, data):
     if err:
         return jsonify({err}), 400
     if dto:
-        
+        pass
+    pass
 
 
 # endregion
