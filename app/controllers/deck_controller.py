@@ -6,10 +6,15 @@ from app.services.deck_service import (
     get_deck_search,
     patch_deck_user,
     delete_deck_service,
+    get_decks,
+    delete_deck_admin,
 )
 from app.services.user_service import fetch_a_user
 from app.DTO.deck_dto import DeckCreateDTO, DeckPatchDTO
 from flask import jsonify, request
+
+
+# region POST
 
 
 def create_deck_controller(user_id, data):
@@ -28,7 +33,14 @@ def create_deck_controller(user_id, data):
     return jsonify(response_data), 201
 
 
+# endregion
+
+
+# region GET
+
+
 def get_user_decks_controller(user_id):
+    """EndPoint : GET /users/decks"""
     creator = fetch_a_user(user_id)
     if not creator:
         return jsonify({"message": "user not found"}), 404
@@ -41,6 +53,7 @@ def get_user_decks_controller(user_id):
 
 
 def get_deck_controller(user_id, deck_id, data_access):
+    """EndPoint : GET /users/decks/int:id"""
     deck, err = get_deck_search(user_id, deck_id, data_access)
     if err:
         error_message = err.get("error")
@@ -60,7 +73,22 @@ def get_deck_controller(user_id, deck_id, data_access):
     return jsonify(deck_response), 200
 
 
+def get_all_decks_controller():
+    """EndPoint : GET /users/decks/admin"""
+    try:
+        decks = get_decks()
+        decks_dict = [deck.to_dict() for deck in decks]
+        return jsonify(decks_dict), 200
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch decks", "details": str(e)}), 500
+
+
+# endregion
+
+
+# region UPDATE
 def update_deck_controller(user_id, deck_id, data):
+    """EndPoint : PATCH /users/decks/int:id"""
     creator = fetch_a_user(user_id)
     if not creator:
         return jsonify({"message": "user not found"}), 404
@@ -85,7 +113,12 @@ def update_deck_controller(user_id, deck_id, data):
     return jsonify(response_data), 200
 
 
+# endregion
+
+
+# region DELETE
 def delete_deck_controller(user_id, deck_id):
+    """EndPoint : DELETE /users/decks/int:id"""
     creator = fetch_a_user(user_id)
     if not creator:
         return jsonify({"message": "user not found"}), 404
@@ -101,3 +134,14 @@ def delete_deck_controller(user_id, deck_id):
     if not deck_delete:
         return jsonify({"message": "unexpected error"}), 500
     return jsonify({"message": "deck deleted successfully"}), 200
+
+
+def delete_deck_admin_controller(deck_id):
+    """EndPoint : DELETE /users/decks/int:id"""
+    deck = delete_deck_admin(deck_id)
+    if not deck:
+        return jsonify({"message": "deck not found"}), 404
+    return jsonify({"message": "deck deleted successfully"}), 200
+
+
+# endregion

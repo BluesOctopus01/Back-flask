@@ -6,11 +6,14 @@ from app.controllers.deck_controller import (
     update_deck_controller,
     get_user_decks_controller,
     get_deck_controller,
+    get_all_decks_controller,
+    delete_deck_admin_controller,
 )
 
 deck_bp = Blueprint("deck_bp", __name__, url_prefix="/users/decks")
 
 
+# region POST
 @deck_bp.route("/create", methods=["POST"])
 @jwt_required
 def create_deck(user_id, role):
@@ -18,6 +21,10 @@ def create_deck(user_id, role):
     return create_deck_controller(user_id, data)
 
 
+# endregion
+
+
+# region GET
 @deck_bp.route("/", methods=["GET"])
 @jwt_required
 def get_decks(user_id, role):
@@ -34,6 +41,16 @@ def get_deck(user_id, role, deck_id):
     return get_deck_controller(user_id, deck_id, data_access)
 
 
+@deck_bp.route("/admin", methods=["GET"])
+@admin_required
+def get_all_decks():
+    return get_all_decks_controller()
+
+
+# endregion
+
+
+# region UPDATE
 @deck_bp.route("/<int:deck_id>", methods=["PATCH"])
 @jwt_required
 def update_deck(user_id, role, deck_id):
@@ -41,10 +58,20 @@ def update_deck(user_id, role, deck_id):
     return update_deck_controller(user_id, deck_id, data)
 
 
+# endregion
+
+
+# region DELETE
 @deck_bp.route("/<int:deck_id>", methods=["DELETE"])
 @jwt_required
 def delete_deck(user_id, role, deck_id):
     return delete_deck_controller(user_id, deck_id)
 
 
-# todo admin méthode
+@deck_bp.route("/admin/<int:deck_id>", methods=["DELETE"])
+@admin_required
+def delete_deck_admin(deck_id):
+    return delete_deck_admin_controller(deck_id)
+
+
+# endregion
