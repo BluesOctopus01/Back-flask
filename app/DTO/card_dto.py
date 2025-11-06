@@ -153,7 +153,7 @@ class ImageCreateDTO(CardCreateDTO):
 
 @dataclass
 class QcmCreateDTO(CardCreateDTO):
-    # plusieurs réponses sont attendues
+    """Validate and parse a JSON dict into a QcmCreateDTO, send back answers to create them"""
 
     answer: list[Dict[str, object]]
 

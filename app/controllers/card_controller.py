@@ -11,7 +11,12 @@ from app.DTO.card_dto import (
     ImageCreateDTO,
     GapfillCreateDTO,
 )
-from app.services.card_service import create_card
+from app.services.card_service import (
+    create_card_Gapfill,
+    create_card_Image,
+    create_card_Qa,
+    create_card_qcm,
+)
 from app.services.deck_service import is_owner
 from flask import jsonify, request
 
@@ -23,15 +28,25 @@ def create_card_controller(user_id, deck_id, data):
         return jsonify({"message": "Unauthorized"}), 401
 
     data["deck_id"] = deck_id
-
+    #todo centraliser toute la logique pour créer un service
+    # todo en dernier, le plus compliqué
     if data["card_type"] == "qcm":
         dto, err = QaCreateDTO.from_json(data)
+        card = create_card_qcm(dto)
+
     if data["card_type"] == "qa":
         dto, err = GapfillCreateDTO.from_json(data)
+        card = create_card_Qa(dto)
+
     if data["card_type"] == "image":
         dto, err = GapfillCreateDTO.from_json(data)
+
     if data["card_type"] == "gapfill":
         dto, err = QcmCreateDTO.from_json(data)
+    if err:
+        return jsonify({err}), 400
+    if dto:
+        
 
 
 # endregion
