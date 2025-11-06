@@ -44,9 +44,11 @@ def create_app(config_class=None):
     # from app.routes.todo_routes import todo_bp
     from app.routes.user_route import user_bp
     from app.routes.deck_route import deck_bp
+    from app.routes.card_route import card_bp
 
     # app.register_blueprint(user_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(deck_bp)
+    app.register_blueprint(card_bp)
 
     return app

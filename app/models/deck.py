@@ -8,7 +8,7 @@ class Deck(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     bio = db.Column(db.String(100), nullable=True, default="")
-
+    # todo Verifier si on ne peut pas changer, le acess_choice pour le rendre restrictif dans la db au lieu de rajouter une couche de verification
     PUBLIC = "PUBLIC"
     PRIVATE = "PRIVATE"
     PROTECTED = "PROTECTED"
@@ -20,7 +20,6 @@ class Deck(db.Model):
     image = db.Column(db.String(200), nullable=True)
 
     access_key = db.Column(db.String(250), nullable=True, default="")
-    is_active = db.Column(db.Boolean, default=True)
 
     creator_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     last_modification_at = db.Column(
@@ -42,7 +41,6 @@ class Deck(db.Model):
             "access": self.access,
             "creation_at": self.creation_at,
             "image": self.image,
-            "is_active": self.is_active,
             "last_modification_at": self.last_modification_at,
             "creator_id": self.creator_id,
         }
@@ -53,6 +51,5 @@ class Deck(db.Model):
             "id": self.id,
             "name": self.name,
             "access": self.access,
-            "is_active": self.is_active,
             "creator_id": self.creator_id,
         }

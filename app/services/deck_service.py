@@ -15,8 +15,17 @@ from app.models import db
 # if not deck:
 #     return jsonify({"message": "deck not found"}), 404
 
+
 # if deck.creator_id != user_id:
 #     return jsonify({"message": "Unauthorized"}), 401
+def is_owner(user_id, deck_id) -> bool:
+    """Return True if the user is the owner else False"""
+    deck = get_deck(deck_id)
+    if not deck:
+        return False
+    if not deck.creator_id == user_id:
+        return False
+    return True
 
 
 # region POST
