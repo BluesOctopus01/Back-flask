@@ -46,7 +46,8 @@ def post_deck(
 
     # endregion
 
-    # region GET
+
+# region GET
 
 
 def get_deck_search(
@@ -98,6 +99,11 @@ def get_deck(deck_id: int) -> Deck | None:
     return deck
 
 
+def get_decks() -> list[Deck] | None:
+    """Return all decks for an admin only"""
+    return Deck.query.all()
+
+
 # endregion
 
 
@@ -141,11 +147,22 @@ def patch_deck_user(
 
 # region DELETE/SOFT
 def delete_deck_service(deck_id) -> bool:
+    """User delete a deck, return true or not if success"""
     deck_delete = get_deck(deck_id)
     if not deck_delete:
         return False
 
     db.session.delete(deck_delete)
+    db.session.commit()
+    return True
+
+
+def delete_deck_admin(deck_id) -> bool:
+    """Admin delete a deck, return true or not if success"""
+    deck_to_delete = get_deck(deck_id)
+    if not deck_to_delete:
+        return False
+    db.session.delete(deck_to_delete)
     db.session.commit()
     return True
 
