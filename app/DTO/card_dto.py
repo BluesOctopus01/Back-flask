@@ -179,14 +179,16 @@ class QcmCreateDTO(CardCreateDTO):
             if not isinstance(a["valid"], bool):
                 return None, {"error": f"'valid' must be a boolean at index {i}"}
 
-            # a["answer"] = a["answer"].strip()
-            # if not a["answer"]:
-            #     return None, {"error": f"Answer at index {i} cannot be empty"}
+            a["answer"] = a["answer"].strip()
+            if not a["answer"]:
+                return None, {"error": f"Answer at index {i} cannot be empty"}
 
         # Vérifications globales
         unique_answers = {a["answer"] for a in answers}
-        if len(unique_answers) < 4:
-            return None, {"error": "There must be at least 4 different answers"}
+        if len(unique_answers) < 3:
+            return None, {"error": "There must be at least 3 different answers"}
+        if len(unique_answers) > 6:
+            return None, {"error": "There must be at least 6 different answers"}
         if not any(a["valid"] for a in answers):
             return None, {"error": "There must be at least one correct answer"}
 

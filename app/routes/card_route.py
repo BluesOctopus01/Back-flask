@@ -1,6 +1,12 @@
 from flask import Blueprint, request
 from app.utils.jwt_utils import jwt_required, admin_required
-from app.controllers.card_controller import create_card_controller
+from app.controllers.card_controller import (
+    create_card_controller,
+    get_card_deck_controller,
+    get_all_cards_controller,
+    get_card_by_id_controller,
+    patch_card_controller,
+)
 from app.routes.deck_route import deck_bp
 
 card_bp = Blueprint("card_bp", __name__, url_prefix="/users/decks/cards")
@@ -19,24 +25,40 @@ def create_card(user_id, role, deck_id):
 
 
 # region GET
+@deck_bp.route("/<int:deck_id>/cards", methods=["GET"])
+@jwt_required
+def get_card_deck(user_id, role, deck_id):
+    access_key = request.args.get("access_key")
+    data_access = {"access_key": access_key} if access_key else {}
+    return get_card_deck_controller(user_id, deck_id, data_access)
+
+
 @card_bp.route("/", methods=["GET"])
+@admin_required
 def get_all_cards():
-    pass
+    return get_all_cards_controller()
 
 
-@card_bp.route("/<int:id>", methods=["GET"])
-def get_card():
-    pass
-
-
-@card_bp.route("/draw", methods=["GET"])
-def get_random_card():
-    pass
+@deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["GET"])
+@jwt_required
+def get_a_card(user_id, role, deck_id, card_id):
+    access_key = request.args.get("access_key")
+    data_access = {"access_key": access_key} if access_key else {}
+    return get_card_by_id_controller(user_id, deck_id, card_id, data_access)
 
 
 # endregion
 
+
 # region UPDATE
+# todo continuer
+@deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["PATCH"])
+@jwt_required
+def update_a_card(user_id, role, deck_id, card_id):
+    data = request.get_json()
+
+    return patch_card_controller(user_id, deck_id, card_id, data)
+
 
 # endregion
 

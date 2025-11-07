@@ -6,7 +6,11 @@ from app.models.cards_models.card_qa import Qa
 from app.models.cards_models.card_qcm import Qcm
 
 from app.models import db
+from app.services.deck_service import get_deck
 
+import random
+
+used_cards_by_deck: dict[int, list[int]] = {}
 
 # region POST
 
@@ -97,9 +101,36 @@ def create_card_Image(dto) -> Image:
 # endregion
 # region GET
 
+
+def get_cards_deck(deck_id: int) -> list[Card]:
+    """Return a list of cards in a deck"""
+    deck = get_deck(deck_id)
+    if not deck:
+        return None
+    return deck.cards
+
+
+def get_all_cards() -> list[Card]:
+    """Return a list of all cards"""
+    cards = Card.query.all()
+    return cards
+
+
+def get_card_by_id(deck_id: int, card_id: int) -> Card | None:
+    """Return a card"""
+    card = Card.query.filter_by(id=card_id, deck_id=deck_id).first()
+    if not card:
+        return None
+    return card
+
+
 # endregion
 
+
 # region UPDATE
+def patch_card():
+    pass
+
 
 # endregion
 
