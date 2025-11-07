@@ -11,17 +11,27 @@ from app.DTO.card_dto import (
     ImageCreateDTO,
     GapfillCreateDTO,
 )
-from app.services.card_service import factorized_create_card
+from app.services.card_service import (
+    factorized_create_card,
+    get_cards_deck,
+    get_all_cards,
+    get_card_by_id,
+    patch_card,
+)
+from app.services.deck_service import get_deck_search
 from app.services.deck_service import is_owner
 from flask import jsonify, request
 
 
 # region POST
 def create_card_controller(user_id, deck_id, data):
+    """EndPoint : POST /users/deck/:id/cards"""
 
     if not is_owner(user_id, deck_id):
         return jsonify({"message": "Unauthorized"}), 401
+
     card_type = data.get("card_type")
+
     if card_type not in ["qcm", "qa", "image", "gapfill"]:
         return jsonify({"message": "Invalid card_type"}), 400
     data["deck_id"] = deck_id
@@ -50,11 +60,87 @@ def create_card_controller(user_id, deck_id, data):
 
 # endregion
 
+
 # region GET
+def get_card_deck_controller(user_id, deck_id, data_access):
+    """EndPoint : GET /users/deck/:id/cards/"""
+    # todo filtre type de cartes ect
+
+    deck, err = get_deck_search(user_id, deck_id, data_access)
+
+    if err:
+        return jsonify(err), 403
+
+    try:
+        cards = get_cards_deck(deck_id)
+        cards_dict = [card.to_dict() for card in cards]
+        return jsonify(cards_dict), 200
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch cards", "details": str(e)}), 500
+
+
+def get_all_cards_controller():
+    """EndPoint : GET /users/deck/cards/"""
+    cards = get_all_cards()
+    cards_dict = [card.to_dict() for card in cards]
+    return jsonify(cards_dict), 200
+
+
+def get_card_by_id_controller(user_id, deck_id, card_id, data_access):
+    """EndPoint : GET /users/deck/:id/cards/:id/"""
+    #!!!todo verifier quand on fait un get qu'on ne doivent pas tout le temps mettre le mot de passe
+    deck, err = get_deck_search(user_id, deck_id, data_access)
+    if err:
+        return jsonify(err), 403
+
+    card = get_card_by_id(deck_id, card_id)
+    if not card:
+        return jsonify({"message": "card not found"}), 404
+
+    if card.deck_id != deck_id:
+        return jsonify({"error": "Card does not belong to this deck"}), 400
+
+    cards_dict = card.to_dict()
+    return jsonify(cards_dict), 200
+
 
 # endregion
 
+
 # region UPDATE
+# todo continuer
+def patch_card_controller(user_id, deck_id, card_id, data):
+
+    if not is_owner(user_id, deck_id):
+        return jsonify({"message": "Unauthorized"}), 401
+
+    card_type = data.get("card_type")
+    if card_type not in ["qcm", "qa", "image", "gapfill"]:
+        return jsonify({"message": "Invalid card_type"}), 400
+
+    data["deck_id"] = deck_id
+
+    # if card_type == "qcm":
+    #     dto, err = .from_json(data)
+
+    # if card_type == "qa":
+    #     dto, err = .from_json(data)
+
+    # if card_type == "image":
+    #     dto, err = .from_json(data)
+
+    # if card_type == "gapfill":
+    #     dto, err = .from_json(data)
+    # if err:
+    #     return jsonify(err), 400
+
+    # card = patch_card(deck_id, card_id, data)
+    # if not card:
+    #         return jsonify({"message": "unkown error"}), 500
+
+    # response = card.to_dict()
+    # return jsonify(response), 201
+
 
 # endregion
 

@@ -28,6 +28,13 @@ def is_owner(user_id, deck_id) -> bool:
     return True
 
 
+def verify_deck_access(user_id, deck_id, data_access):
+    deck, err = get_deck_search(user_id, deck_id, data_access)
+    if err:
+        return None, err
+    return deck, None
+
+
 # region POST
 def post_deck(
     name: str,
@@ -62,7 +69,7 @@ def post_deck(
 def get_deck_search(
     user_id: int, deck_id: int, data_access: str
 ) -> Tuple[Optional["Deck"], Optional[Dict]]:
-    """Return a deck and None or None and an error"""
+    """Retrieve a deck based on user access rights and return either the deck or an error"""
 
     deck: Deck = get_deck(deck_id)
     # Deck introuvable
@@ -77,18 +84,17 @@ def get_deck_search(
     if deck.access == "PUBLIC":
         return deck, None
 
-    # Accès protégé : mot de passe requis
+    # Accès protégé mot de passe
     if deck.access == "PROTECTED":
         if check_password_hash(deck.access_key, data_access["access_key"]):
             return deck, None
         else:
             return None, {"error": "Invalid credentials"}
 
-    # Accès privé : refusé
+    # Accès privé refusé
     if deck.access == "PRIVATE":
         return None, {"error": "Unauthorized"}
 
-    # Cas inattendu
     return None, {"error": "Unknown access type"}
 
 
