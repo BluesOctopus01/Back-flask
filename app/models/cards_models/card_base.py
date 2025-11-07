@@ -16,3 +16,16 @@ class Card(db.Model):
     deck_id = db.Column(db.Integer, db.ForeignKey("deck.id"), nullable=False)
 
     __mapper_args__ = {"polymorphic_identity": "card", "polymorphic_on": card_type}
+
+    def to_dict(self) -> dict:
+        """Return a JSON-compatible dictionary representing the Deck without sensitive informations"""
+        return {
+            "id": self.id,
+            "card_type": self.card_type,
+            "question": self.question,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "last_modification": (
+                self.last_modification.isoformat() if self.last_modification else None
+            ),
+            "deck_id": self.deck_id,
+        }

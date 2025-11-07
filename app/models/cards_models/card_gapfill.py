@@ -13,3 +13,13 @@ class Gapfill(Card):
     __mapper_args__ = {
         "polymorphic_identity": "gapfill",
     }
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update(
+            {
+                "text1": self.text1,
+                "text2": self.text2,
+                "answer": self.answer,
+            }
+        )

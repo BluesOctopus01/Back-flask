@@ -165,11 +165,12 @@ class QcmCreateDTO(CardCreateDTO):
         if error:
             return None, error
 
-        answers = (data.get("answer") or "").strip()
+        answers = data.get("answer")
         # Verification si il y a bien une instance de réponses
         if not isinstance(answers, list) or not answers:
             return None, {"error": "Answer must be a non-empty list"}
         #!! Compliquer
+        # TODO a relire
         # i = index, a = dictionnaire a cette position
         for i, a in enumerate(answers):
             if not isinstance(a, dict):
@@ -183,6 +184,18 @@ class QcmCreateDTO(CardCreateDTO):
                 return None, {"error": f"'answer' must be a string at index {i}"}
             if not isinstance(a["valid"], bool):
                 return None, {"error": f"'valid' must be a boolean at index {i}"}
+
+            a["answer"] = a["answer"].strip()
+            if not a["answer"]:
+                return None, {"error": f"Answer at index {i} cannot be empty"}
+
+            # { } crée un set CE QUI FILTRE LES DOUBLONS AUTOMATIQUEMENT
+            unique_answers = {a["answer"] for a in answers}
+
+            if len(unique_answers) < 4:
+                return None, {"error": "There must be at least 4 different answers"}
+            if not any(a["valid"] for a in answers):
+                return None, {"error": "There must be at least one correct answer"}
 
         return (
             QcmCreateDTO(

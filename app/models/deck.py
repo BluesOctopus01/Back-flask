@@ -39,9 +39,13 @@ class Deck(db.Model):
             "name": self.name,
             "bio": self.bio,
             "access": self.access,
-            "creation_at": self.creation_at,
+            "creation_at": self.creation_at.isoformat() if self.creation_at else None,
             "image": self.image,
-            "last_modification_at": self.last_modification_at,
+            "last_modification_at": (
+                self.last_modification_at.isoformat()
+                if self.last_modification_at
+                else None
+            ),
             "creator_id": self.creator_id,
         }
 

@@ -9,13 +9,47 @@ from app.models import db
 
 
 # region POST
-# todo en dernier, le plus compliqué
-def create_card_qcm(card_type: str, question: str, deck_id: int):
-    pass
+
+
+def factorized_create_card(dto) -> Gapfill | Image | Qa | Qcm | None:
+    """Receive a dto and create a card by checking is "card_type", returning the propre type of card
+    in the case of a Qcm card, create severals answerQcm instances"""
+    # check the type
+    if dto.card_type == "qcm":
+        return create_card_Qcm(dto)
+
+    elif dto.card_type == "qa":
+        return create_card_Qa(dto)
+
+    elif dto.card_type == "image":
+        return create_card_Image(dto)
+
+    elif dto.card_type == "gapfill":
+        return create_card_Gapfill(dto)
+
+    return None
+
+
+def create_card_Qcm(dto) -> Qcm:
+    """Return a card Question Answer and create Answers"""
+    new_card = Qcm(
+        card_type=dto.card_type,
+        question=dto.question,
+        deck_id=dto.deck_id,
+    )
+    db.session.add(new_card)
+    db.session.flush()
+
+    for a in dto.answer:
+        new_answer = AnswerQcm(answer=a["answer"], valid=a["valid"], qcm_id=new_card.id)
+        db.session.add(new_answer)
+
+    db.session.commit()
+    return new_card
 
 
 def create_card_Qa(dto) -> Qa:
-    """Return a created Card"""
+    """Return a card Question Answer"""
     new_card = Qa(
         card_type=dto.card_type,
         question=dto.question,
@@ -28,16 +62,36 @@ def create_card_Qa(dto) -> Qa:
     return new_card
 
 
-def create_card_Gapfill(
-    card_type: str, question: str, deck_id: int, text1: str, text2: str, answer: str
-):
-    pass
+def create_card_Gapfill(dto) -> Gapfill:
+    """Return a card Gapfill"""
+    new_card = Gapfill(
+        card_type=dto.card_type,
+        question=dto.question,
+        deck_id=dto.deck_id,
+        text1=dto.text1,
+        text2=dto.text2,
+        answer=dto.answer,
+    )
+
+    db.session.add(new_card)
+    db.session.commit()
+    return new_card
 
 
-def create_card_Image(
-    card_type: str, question: str, deck_id: int, text_alt: str, url: str, answer: str
-):
-    pass
+def create_card_Image(dto) -> Image:
+    """Return a card Image"""
+    new_card = Image(
+        card_type=dto.card_type,
+        question=dto.question,
+        deck_id=dto.deck_id,
+        text_alt=dto.text_alt,
+        url=dto.url,
+        answer=dto.answer,
+    )
+
+    db.session.add(new_card)
+    db.session.commit()
+    return new_card
 
 
 # endregion

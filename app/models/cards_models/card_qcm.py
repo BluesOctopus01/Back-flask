@@ -13,3 +13,7 @@ class Qcm(Card):
     __mapper_args__ = {
         "polymorphic_identity": "qcm",
     }
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update({"answers": self.answers})

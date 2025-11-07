@@ -15,14 +15,6 @@ def create_card(user_id, role, deck_id):
     create_card_controller(user_id, deck_id, data)
 
 
-# BESOIN
-# user id
-# deck id
-# data composé de toutes les informations pour une carte
-
-# QUESTION
-# est ce que tout peux être contenu dans ma requete json ?
-
 # endregion
 
 

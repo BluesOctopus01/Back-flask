@@ -12,3 +12,11 @@ class Qa(Card):
     __mapper_args__ = {
         "polymorphic_identity": "qa",
     }
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update(
+            {
+                "answer": self.answer,
+            }
+        )

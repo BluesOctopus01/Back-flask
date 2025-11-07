@@ -13,3 +13,13 @@ class Image(Card):
     __mapper_args__ = {
         "polymorphic_identity": "image",
     }
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update(
+            {
+                "text_alt": self.text_alt,
+                "url": self.url,
+                "answer": self.answer,
+            }
+        )
