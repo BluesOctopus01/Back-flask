@@ -40,7 +40,7 @@ def create_card_Qcm(dto) -> Qcm:
     db.session.add(new_card)
     db.session.flush()
 
-    for a in dto.answer:
+    for a in dto.answers:
         new_answer = AnswerQcm(answer=a["answer"], valid=a["valid"], qcm_id=new_card.id)
         db.session.add(new_answer)
 

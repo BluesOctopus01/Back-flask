@@ -12,7 +12,7 @@ card_bp = Blueprint("card_bp", __name__, url_prefix="/users/decks/cards")
 @jwt_required
 def create_card(user_id, role, deck_id):
     data = request.get_json()
-    create_card_controller(user_id, deck_id, data)
+    return create_card_controller(user_id, deck_id, data)
 
 
 # endregion

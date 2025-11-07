@@ -20,3 +20,4 @@ class Qa(Card):
                 "answer": self.answer,
             }
         )
+        return data

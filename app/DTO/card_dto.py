@@ -155,7 +155,7 @@ class ImageCreateDTO(CardCreateDTO):
 class QcmCreateDTO(CardCreateDTO):
     """Validate and parse a JSON dict into a QcmCreateDTO, send back answers to create them"""
 
-    answer: list[Dict[str, object]]
+    answers: list[Dict[str, object]]
 
     @staticmethod
     def from_json(data: dict) -> Tuple[Optional["QcmCreateDTO"], Optional[Dict]]:
@@ -165,57 +165,37 @@ class QcmCreateDTO(CardCreateDTO):
         if error:
             return None, error
 
-        answers = data.get("answer")
-        # Verification si il y a bien une instance de réponses
+        answers = data.get("answers")
         if not isinstance(answers, list) or not answers:
             return None, {"error": "Answer must be a non-empty list"}
-        #!! Compliquer
-        # TODO a relire
-        # i = index, a = dictionnaire a cette position
+
         for i, a in enumerate(answers):
             if not isinstance(a, dict):
-                # on verifie que c'est bien un dico
                 return None, {"error": f"Answer at index {i} must be a dictionary"}
-            # on verifie qu'on a bien answer et valid
             if "answer" not in a or "valid" not in a:
                 return None, {"error": f"Missing keys in answer at index {i}"}
-            # on verifie le type
             if not isinstance(a["answer"], str):
                 return None, {"error": f"'answer' must be a string at index {i}"}
             if not isinstance(a["valid"], bool):
                 return None, {"error": f"'valid' must be a boolean at index {i}"}
 
-            a["answer"] = a["answer"].strip()
-            if not a["answer"]:
-                return None, {"error": f"Answer at index {i} cannot be empty"}
+            # a["answer"] = a["answer"].strip()
+            # if not a["answer"]:
+            #     return None, {"error": f"Answer at index {i} cannot be empty"}
 
-            # { } crée un set CE QUI FILTRE LES DOUBLONS AUTOMATIQUEMENT
-            unique_answers = {a["answer"] for a in answers}
-
-            if len(unique_answers) < 4:
-                return None, {"error": "There must be at least 4 different answers"}
-            if not any(a["valid"] for a in answers):
-                return None, {"error": "There must be at least one correct answer"}
+        # Vérifications globales
+        unique_answers = {a["answer"] for a in answers}
+        if len(unique_answers) < 4:
+            return None, {"error": "There must be at least 4 different answers"}
+        if not any(a["valid"] for a in answers):
+            return None, {"error": "There must be at least one correct answer"}
 
         return (
             QcmCreateDTO(
                 card_type=base_dto.card_type,
                 question=base_dto.question,
                 deck_id=base_dto.deck_id,
-                answer=answers,
+                answers=answers,
             ),
             None,
         )
-
-
-# {
-#   "card_type": "qcm",
-#   "question": "Quels langages sont compilés ?",
-#   "deck_id": 1,
-#   "answers": [
-#     1{"answer": "Python", "valid": false},
-#     2{"answer": "C++", "valid": true},
-#     3{"answer": "Java", "valid": true},
-#     4{"answer": "HTML", "valid": false}
-#   ]
-# }

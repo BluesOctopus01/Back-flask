@@ -7,3 +7,6 @@ class AnswerQcm(db.Model):
     valid = db.Column(db.Boolean, default=False)
 
     qcm_id = db.Column(db.Integer, db.ForeignKey("qcm.id"), nullable=False)
+
+    def to_dict(self):
+        return {"id": self.id, "answer": self.answer, "valid": self.valid}

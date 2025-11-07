@@ -23,3 +23,4 @@ class Image(Card):
                 "answer": self.answer,
             }
         )
+        return data

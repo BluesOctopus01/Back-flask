@@ -21,22 +21,24 @@ def create_card_controller(user_id, deck_id, data):
 
     if not is_owner(user_id, deck_id):
         return jsonify({"message": "Unauthorized"}), 401
-
+    card_type = data.get("card_type")
+    if card_type not in ["qcm", "qa", "image", "gapfill"]:
+        return jsonify({"message": "Invalid card_type"}), 400
     data["deck_id"] = deck_id
 
-    if data["card_type"] == "qcm":
+    if card_type == "qcm":
+        dto, err = QcmCreateDTO.from_json(data)
+
+    if card_type == "qa":
         dto, err = QaCreateDTO.from_json(data)
 
-    if data["card_type"] == "qa":
-        dto, err = GapfillCreateDTO.from_json(data)
-
-    if data["card_type"] == "image":
+    if card_type == "image":
         dto, err = ImageCreateDTO.from_json(data)
 
-    if data["card_type"] == "gapfill":
-        dto, err = QcmCreateDTO.from_json(data)
+    if card_type == "gapfill":
+        dto, err = GapfillCreateDTO.from_json(data)
     if err:
-        return jsonify({err}), 400
+        return jsonify(err), 400
 
     card = factorized_create_card(dto)
     if not card:

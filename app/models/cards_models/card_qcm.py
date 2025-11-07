@@ -8,7 +8,7 @@ class Qcm(Card):
     id = db.Column(db.Integer, db.ForeignKey("card.id"), primary_key=True)
 
     answers = db.relationship(
-        "AnswerQcm", backref="qcm", lazy=True, cascade="all, delete-orphan"
+        "AnswerQcm", backref="qcm", lazy="joined", cascade="all, delete-orphan"
     )
     __mapper_args__ = {
         "polymorphic_identity": "qcm",
@@ -16,4 +16,6 @@ class Qcm(Card):
 
     def to_dict(self):
         data = super().to_dict()
-        data.update({"answers": self.answers})
+        # Convertir les  en liste de dicts pour json
+        data["answers"] = [a.to_dict() for a in self.answers]
+        return data

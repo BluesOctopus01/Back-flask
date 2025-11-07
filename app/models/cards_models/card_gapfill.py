@@ -23,3 +23,4 @@ class Gapfill(Card):
                 "answer": self.answer,
             }
         )
+        return data
