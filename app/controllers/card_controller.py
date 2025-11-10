@@ -10,13 +10,17 @@ from app.DTO.card_dto import (
     QcmCreateDTO,
     ImageCreateDTO,
     GapfillCreateDTO,
+    QaPatchDTO,
+    QcmPatchDTO,
+    ImagePatchDTO,
+    GapfillPatchDTO,
 )
 from app.services.card_service import (
     factorized_create_card,
     get_cards_deck,
     get_all_cards,
     get_card_by_id,
-    patch_card,
+    factorized_patch_card,
 )
 from app.services.deck_service import get_deck_search
 from app.services.deck_service import is_owner
@@ -114,32 +118,30 @@ def patch_card_controller(user_id, deck_id, card_id, data):
     if not is_owner(user_id, deck_id):
         return jsonify({"message": "Unauthorized"}), 401
 
-    card_type = data.get("card_type")
-    if card_type not in ["qcm", "qa", "image", "gapfill"]:
-        return jsonify({"message": "Invalid card_type"}), 400
+    card = get_card_by_id(card_id)
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+    card_type = card.card_type
 
-    data["deck_id"] = deck_id
+    if card_type == "qcm":
+        dto, err = QcmPatchDTO.from_json(data)
 
-    # if card_type == "qcm":
-    #     dto, err = .from_json(data)
+    if card_type == "qa":
+        dto, err = QaPatchDTO.from_json(data)
 
-    # if card_type == "qa":
-    #     dto, err = .from_json(data)
+    if card_type == "image":
+        dto, err = ImagePatchDTO.from_json(data)
 
-    # if card_type == "image":
-    #     dto, err = .from_json(data)
+    if card_type == "gapfill":
+        dto, err = GapfillPatchDTO.from_json(data)
+    if err:
+        return jsonify(err), 400
+    card = factorized_patch_card(card_type, dto)
+    if not card:
+        return jsonify({"message": "unkown error"}), 500
 
-    # if card_type == "gapfill":
-    #     dto, err = .from_json(data)
-    # if err:
-    #     return jsonify(err), 400
-
-    # card = patch_card(deck_id, card_id, data)
-    # if not card:
-    #         return jsonify({"message": "unkown error"}), 500
-
-    # response = card.to_dict()
-    # return jsonify(response), 201
+    response = card.to_dict()
+    return jsonify(response), 201
 
 
 # endregion

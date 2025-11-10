@@ -5,6 +5,7 @@ import re
 from app.utils.verify_utils import VerifyUtils
 
 
+# region POST
 @dataclass
 class CardCreateDTO:
     """Model to create a Base card"""
@@ -138,6 +139,10 @@ class ImageCreateDTO(CardCreateDTO):
         for field, value in required_fields.items():
             if not value:
                 return None, {"error": f"Missing field: {field}"}
+
+        if VerifyUtils.is_valid_image(url):
+            return None, {"error": "Image format unvalid"}
+
         return (
             ImageCreateDTO(
                 card_type=base_dto.card_type,
@@ -201,3 +206,170 @@ class QcmCreateDTO(CardCreateDTO):
             ),
             None,
         )
+
+
+# endregion
+
+
+# region UPDATE
+@dataclass
+class CardPatchDTO:
+    """Model to patch a Base card"""
+
+    # champ de base
+    question: Optional[str]
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["CardPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a CardPatchDTO"""
+        if not data:
+            return None, {"error": "No data provided"}
+
+        question = (data.get("question") or "").strip()
+
+        if not any(question):
+            return None, {"error": "No fields provided for update"}
+
+        return CardPatchDTO(question), None
+
+
+@dataclass
+class QaPatchDTO(CardPatchDTO):
+    """Model to patch a Qa Card"""
+
+    answer: Optional[str]
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["QaPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a QaPatchDTO"""
+
+        base_dto, error = CardPatchDTO.from_json(data)
+        if error:
+            return None, error
+
+        answer = (data.get("answer") or "").strip()
+
+        if not (answer):
+            return None, {"error": "No fields provided for update"}
+
+        return QaPatchDTO(
+            question=base_dto.question,
+            answer=answer,
+        )
+
+
+@dataclass
+class GapfillPatchDTO(CardPatchDTO):
+    """Model to patch a Qa Card"""
+
+    text1: Optional[str]
+    text2: Optional[str]
+    answer: Optional[str]
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["GapfillPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a GapfillPatchDTO"""
+
+        base_dto, error = CardPatchDTO.from_json(data)
+        if error:
+            return None, error
+
+        text1 = (data.get("text1") or "").strip()
+        text2 = (data.get("text2") or "").strip()
+        answer = (data.get("answer") or "").strip()
+
+        if not any([text1, text2, answer]):
+            return None, {"error": "No fields provided for update"}
+
+        return (
+            GapfillPatchDTO(
+                question=base_dto.question,
+                text1=text1,
+                text2=text2,
+                answer=answer,
+            ),
+            None,
+        )
+
+
+@dataclass
+class ImagePatchDTO(CardPatchDTO):
+    """Model to patch a Image Card"""
+
+    text_alt: Optional[str]
+    url: Optional[str]
+    answer: Optional[str]
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["GapfillPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a GapfillPatchDTO"""
+
+        base_dto, error = CardPatchDTO.from_json(data)
+        if error:
+            return None, error
+
+        text_alt = (data.get("text_alt") or "").strip()
+        url = (data.get("url") or "").strip()
+        answer = (data.get("answer") or "").strip()
+
+        if not any([text_alt, url, answer]):
+            return None, {"error": "No fields provided for update"}
+
+        return (
+            GapfillPatchDTO(
+                question=base_dto.question,
+                text_alt=text_alt,
+                url=url,
+                answer=answer,
+            ),
+            None,
+        )
+
+
+@dataclass
+class QcmPatchDTO(CardPatchDTO):
+    """Model to patch a Qcm Card"""
+
+    answers: Optional[list[Dict[str, object]]]
+
+    @staticmethod
+    def from_json(data: dict) -> Tuple[Optional["GapfillPatchDTO"], Optional[Dict]]:
+        """Validate and parse a JSON dict into a GapfillPatchDTO"""
+
+        base_dto, error = CardPatchDTO.from_json(data)
+        if error:
+            return None, error
+
+        answers = data.get("answers")
+        #!! compliquer
+        if answers is not None:
+            if not isinstance(answers, list):
+                return None, {"error": "Answers must be a list"}
+            for i, a in enumerate(answers):
+                if not isinstance(a, dict):
+                    return None, {"error": f"Answer at index {i} must be a dictionary"}
+
+                if "id" in a and not isinstance(a["id"], int):
+                    return None, {"error": f"'id' must be an integer at index {i}"}
+
+                if "answer" in a:
+                    if not isinstance(a["answer"], str):
+                        return None, {
+                            "error": f"'answer' must be a string at index {i}"
+                        }
+                    a["answer"] = a["answer"].strip()
+                    if not a["answer"]:
+                        return None, {"error": f"Answer at index {i} cannot be empty"}
+                if "valid" in a and not isinstance(a["valid"], bool):
+                    return None, {"error": f"'valid' must be a boolean at index {i}"}
+
+        return (
+            QcmPatchDTO(
+                question=base_dto.question,
+                answers=answers,
+            ),
+            None,
+        )
+
+
+# endregion
