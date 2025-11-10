@@ -259,6 +259,16 @@ def patch_card_Gapfill(card_id: int, dto: GapfillPatchDTO):
 
 # endregion
 
+
 # region DELETE
+def delete_card(card_id: int) -> bool:
+    """Get a card then delete it if succeed send True else False"""
+    card_del = get_card_by_id(card_id)
+    if not card_del:
+        return False
+    db.session.delete(card_del)
+    db.session.commit()
+    return True
+
 
 # endregion

@@ -6,6 +6,8 @@ from app.controllers.card_controller import (
     get_all_cards_controller,
     get_card_by_id_controller,
     patch_card_controller,
+    delete_card_controller,
+    delete_card_admin_controller,
 )
 from app.routes.deck_route import deck_bp
 
@@ -68,13 +70,13 @@ def update_a_card(user_id, role, deck_id, card_id):
 @deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["DELETE"])
 @jwt_required
 def delete_card(user_id, role, deck_id, card_id):
-    pass
+    return delete_card_controller(user_id, deck_id, card_id)
 
 
 @deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["DELETE"])
-@jwt_required
-def delete_card_admin(user_id, role, deck_id, card_id):
-    pass
+@admin_required
+def delete_card_admin(card_id):
+    return delete_card_admin_controller(card_id)
 
 
 # endregion

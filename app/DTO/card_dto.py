@@ -373,3 +373,8 @@ class QcmPatchDTO(CardPatchDTO):
 
 
 # endregion
+# TODO RAJOUTER UNE FONCTIONNALITE DE SUPPRESION DANS TOUT LE PATCH
+# "answers": [
+#   { "id": 12, "answer": "Paris", "valid": true },       // mise à jour
+#   { "id": 13, "delete": true }                          // suppression
+# ]

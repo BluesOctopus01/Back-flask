@@ -21,6 +21,7 @@ from app.services.card_service import (
     get_all_cards,
     get_card_by_id,
     factorized_patch_card,
+    delete_card,
 )
 from app.services.deck_service import get_deck_search
 from app.services.deck_service import is_owner
@@ -146,6 +147,26 @@ def patch_card_controller(user_id, deck_id, card_id, data):
 
 # endregion
 
+
 # region DELETE
+def delete_card_controller(user_id, deck_id, card_id):
+    """EndPoint : DELETE /users/deck/:deck_id/cards/:card_id"""
+
+    if not is_owner(user_id, deck_id):
+        return jsonify({"message": "Unauthorized"}), 401
+    card = delete_card(card_id)
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+    return jsonify({"message": "Card deleted successfully"}), 200
+
+
+def delete_card_admin_controller(card_id):
+    """EndPoint : DELETE /users/deck/:deck_id/cards/:card_id"""
+
+    card = delete_card(card_id)
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+    return jsonify({"message": "Card deleted successfully"}), 200
+
 
 # endregion
