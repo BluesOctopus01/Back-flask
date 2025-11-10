@@ -62,6 +62,19 @@ def update_a_card(user_id, role, deck_id, card_id):
 
 # endregion
 
+
 # region DELETE
+# todo continuer
+@deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["DELETE"])
+@jwt_required
+def delete_card(user_id, role, deck_id, card_id):
+    pass
+
+
+@deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["DELETE"])
+@jwt_required
+def delete_card_admin(user_id, role, deck_id, card_id):
+    pass
+
 
 # endregion
