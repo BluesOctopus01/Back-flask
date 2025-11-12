@@ -60,6 +60,7 @@ def patch_tag_controller(tag_id, data):
     if err:
         return jsonify(err), 403
     tag = patch_tag(tag_id, dto.name, dto.description)
+
     if not tag:
         return jsonify({"message": "tag not found"}), 404
     response_data = tag.to_dict()

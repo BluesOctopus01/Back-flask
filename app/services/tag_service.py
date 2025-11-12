@@ -6,7 +6,7 @@ from app.models import db
 # region POST
 def create_tag(name: str, description: str) -> Tag:
     """Create a tag and return a tag"""
-    new_tag = Tag(name, description)
+    new_tag = Tag(name=name, description=description)
     db.session.add(new_tag)
     db.session.commit()
     return new_tag
@@ -23,7 +23,7 @@ def fetch_all_tags() -> list[Tag]:
 
 def fetch_tag_by_id(tag_id: int) -> None | Tag:
     """Fetch a tag by his id, return None or a tag"""
-    tag = Tag.query.filter_by(id=tag_id)
+    tag = Tag.query.filter_by(id=tag_id).first()
     if not tag:
         return None
     return tag
