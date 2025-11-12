@@ -11,6 +11,7 @@ from app.controllers.deck_controller import (
 )
 
 deck_bp = Blueprint("deck_bp", __name__, url_prefix="/users/decks")
+# todo intégré Tags
 
 
 # region POST

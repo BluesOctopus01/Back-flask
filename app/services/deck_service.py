@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple, Dict, List
 from app.models.deck import Deck
+from app.models.tags import Tag
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db
 
@@ -43,6 +44,7 @@ def post_deck(
     image: str,
     access_key: str,
     creator_id: int,
+    tags: List[int],
 ) -> Deck:
     """Return a created Deck"""
     hashed_access_key = generate_password_hash(access_key) if access_key else None
@@ -55,7 +57,14 @@ def post_deck(
         access_key=hashed_access_key,
         creator_id=creator_id,
     )
+
     db.session.add(new_deck)
+    db.session.flush()
+
+    if tags:
+        # in_ est l'équivalent d'une requete where en SQL
+        new_deck.tags = Tag.query.filter(Tag.id.in_(tags)).all()
+
     db.session.commit()
 
     return new_deck
@@ -130,6 +139,8 @@ def patch_deck_user(
     access: str | None,
     image: str | None,
     access_key: str | None,
+    add_tags: list[int] | None,
+    remove_tags: list[int] | None,
 ) -> Deck | None:
     """Patch a deck with informations from User, if there is no information the old one is kept"""
     deck = get_deck(deck_id)
@@ -152,6 +163,17 @@ def patch_deck_user(
     if access_key is not None:
         deck.access_key = generate_password_hash(access_key)
 
+    if add_tags:
+        for tag_id in add_tags:
+            tag = Tag.query.get(tag_id)
+            if tag and tag not in deck.tags:
+                deck.tags.append(tag)
+
+    if remove_tags:
+        for tag_id in remove_tags:
+            tag = Tag.query.get(tag_id)
+            if tag and tag in deck.tags:
+                deck.tags.remove(tag)
     db.session.commit()
 
     return deck

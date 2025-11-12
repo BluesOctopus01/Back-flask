@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple, Dict, List
 import re
 from app.utils.verify_utils import VerifyUtils
 
@@ -15,9 +15,9 @@ class DeckCreateDTO:
     access: Optional[str]
     image: str
     access_key: Optional[str]
-
     VALID_ACCESS = {"PUBLIC", "PRIVATE", "PROTECTED"}
 
+    @staticmethod
     def from_json(data: dict) -> Tuple[Optional["DeckCreateDTO"], Optional[Dict]]:
         """Validate and parse a JSON dict into a DeckCreateDTO"""
         if not data:
@@ -81,11 +81,22 @@ class DeckPatchDTO:
         if not data:
             return None, {"error": "No data provided"}
 
-        new_name = (data.get("name") or "").strip().capitalize()
-        new_bio = (data.get("bio") or "").strip()
-        new_access = (data.get("access") or "").strip()
-        new_image = (data.get("image") or "").strip()
-        new_access_key = (data.get("access_key") or "").strip()
+        new_name = data.get("name")
+        new_bio = data.get("bio")
+        new_access = data.get("access")
+        new_image = data.get("image")
+        new_access_key = data.get("access_key")
+
+        if new_name is not None:
+            new_name.strip().capitalize()
+        if new_bio is not None:
+            new_bio.strip()
+        if new_access is not None:
+            new_access.strip()
+        if new_image is not None:
+            new_image.strip()
+        if new_access_key is not None:
+            new_access_key.strip()
 
         if new_access and new_access not in DeckPatchDTO.VALID_ACCESS:
             return None, {

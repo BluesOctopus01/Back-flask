@@ -1,5 +1,8 @@
 from app.models import db
 from datetime import datetime, timezone
+from app.models.cards_models.card_base import Card
+from app.models.tags import Tag
+from typing import List
 
 
 class Deck(db.Model):
@@ -28,6 +31,7 @@ class Deck(db.Model):
     cards = db.relationship(
         "Card", backref="deck", lazy=True, cascade="all, delete-orphan"
     )
+    tags = db.relationship("Tag", secondary="tag_deck", back_populates="decks")
 
     def __repr__(self):
         return f"<Deck {self.name}"
@@ -47,8 +51,11 @@ class Deck(db.Model):
                 else None
             ),
             "creator_id": self.creator_id,
+            "cards": [card.to_dict() for card in self.cards],
+            "tags": [tag.to_dict() for tag in self.tags],
         }
 
+    # todo verifier si card.to_dict() et tag fonctionne bien sans le typage plus autorisé
     def to_summary_dict(self) -> dict:
         """Return the summary of a deck"""
         return {

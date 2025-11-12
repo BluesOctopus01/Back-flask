@@ -23,11 +23,13 @@ def create_deck_controller(user_id, data):
     if not creator:
         return jsonify({"message": "user not found"}), 404
     data["creator_id"] = user_id
+    tags = data.get("tags", [])
+
     dto, err = DeckCreateDTO.from_json(data)
     if err:
         return jsonify(err), 400
     new_deck = post_deck(
-        dto.name, dto.bio, dto.access, dto.image, dto.access_key, dto.creator_id
+        dto.name, dto.bio, dto.access, dto.image, dto.access_key, dto.creator_id, tags
     )
     response_data = new_deck.to_dict()
     return jsonify(response_data), 201
@@ -90,6 +92,8 @@ def get_all_decks_controller():
 def update_deck_controller(user_id, deck_id, data):
     """EndPoint : PATCH /users/decks/int:id"""
     creator = fetch_a_user(user_id)
+    add_tags = data.get("add_tags", [])
+    remove_tags = data.get("remove_tags", [])
     if not creator:
         return jsonify({"message": "user not found"}), 404
 
@@ -104,12 +108,19 @@ def update_deck_controller(user_id, deck_id, data):
     if err:
         return jsonify(err), 400
     updated_deck = patch_deck_user(
-        deck_id, dto.name, dto.bio, dto.access, dto.image, dto.access_key
+        deck_id,
+        dto.name,
+        dto.bio,
+        dto.access,
+        dto.image,
+        dto.access_key,
+        add_tags,
+        remove_tags,
     )
     if not updated_deck:
         return jsonify({"error": "Unknown error"}), 501
 
-    response_data = deck.to_dict()
+    response_data = updated_deck.to_dict()
     return jsonify(response_data), 200
 
 

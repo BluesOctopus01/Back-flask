@@ -18,7 +18,7 @@ class Card(db.Model):
     __mapper_args__ = {"polymorphic_identity": "card", "polymorphic_on": card_type}
 
     def to_dict(self) -> dict:
-        """Return a JSON-compatible dictionary representing the Deck without sensitive informations"""
+        """Return a JSON-compatible dictionary representing the Card without sensitive informations"""
         return {
             "id": self.id,
             "card_type": self.card_type,

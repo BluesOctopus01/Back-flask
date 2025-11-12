@@ -225,10 +225,9 @@ class CardPatchDTO:
         if not data:
             return None, {"error": "No data provided"}
 
-        question = (data.get("question") or "").strip()
-
-        if not any(question):
-            return None, {"error": "No fields provided for update"}
+        question = data.get("question")
+        if question is not None:
+            question.strip()
 
         return CardPatchDTO(question), None
 
@@ -247,10 +246,13 @@ class QaPatchDTO(CardPatchDTO):
         if error:
             return None, error
 
-        answer = (data.get("answer") or "").strip()
+        answer = data.get("answer")
 
-        if not (answer):
+        if not (answer) or not data:
             return None, {"error": "No fields provided for update"}
+
+        if answer is not None:
+            answer.strip()
 
         return QaPatchDTO(
             question=base_dto.question,
@@ -258,6 +260,7 @@ class QaPatchDTO(CardPatchDTO):
         )
 
 
+# todo prendre exemple sur le GapfillPatchDTO pour PATCH correctement.
 @dataclass
 class GapfillPatchDTO(CardPatchDTO):
     """Model to patch a Qa Card"""
@@ -274,12 +277,19 @@ class GapfillPatchDTO(CardPatchDTO):
         if error:
             return None, error
 
-        text1 = (data.get("text1") or "").strip()
-        text2 = (data.get("text2") or "").strip()
-        answer = (data.get("answer") or "").strip()
+        text1 = data.get("text1")
+        text2 = data.get("text2")
+        answer = data.get("answer")
 
-        if not any([text1, text2, answer]):
-            return None, {"error": "No fields provided for update"}
+        if not data and not (text1 and text2 and answer):
+            return None, {"error": "No data provided"}
+
+        if text1 is not None:
+            text1 = text1.strip()
+        if text2 is not None:
+            text2 = text2.strip()
+        if answer is not None:
+            answer = answer.strip()
 
         return (
             GapfillPatchDTO(
@@ -308,12 +318,21 @@ class ImagePatchDTO(CardPatchDTO):
         if error:
             return None, error
 
-        text_alt = (data.get("text_alt") or "").strip()
-        url = (data.get("url") or "").strip()
-        answer = (data.get("answer") or "").strip()
+        text_alt = data.get("text_alt")
+        url = data.get("url")
+        answer = data.get("answer")
 
-        if not any([text_alt, url, answer]):
-            return None, {"error": "No fields provided for update"}
+        if not data or not (text_alt and url and answer):
+            return None, ({"error": "No data provided"})
+
+        if text_alt is not None:
+            text_alt.strip()
+
+        if url is not None:
+            url.strip()
+
+        if answer is not None:
+            answer.strip()
 
         return (
             GapfillPatchDTO(
