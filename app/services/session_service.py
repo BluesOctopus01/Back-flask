@@ -1,5 +1,7 @@
 from app.models.session_models.session import Session
 from app.models import db
+from datetime import datetime, timezone
+from app.models.cards_models.card_base import Card
 
 
 def is_owner_session(user_id: int, session: Session) -> bool:
@@ -59,6 +61,11 @@ def admin_fetch_sessions() -> list[Session]:
     return Session.query.all()
 
 
+# todo reflechir..
+def draw_card() -> Card:
+    pass
+
+
 # endregion
 
 
@@ -86,6 +93,7 @@ def succeed_finish_session(session: Session) -> bool:
     session.status = "FINISHED"
     if session:
         session.status = "FINISHED"
+        session.ended_at = datetime.now(timezone.utc)
         db.session.commit()
         return True
     return False
@@ -99,6 +107,7 @@ def end_session(session: Session) -> bool:
     """Transform status into CANCEL, return True if succeed, and False"""
     if session:
         session.status = "CANCEL"
+        session.ended_at = datetime.now(timezone.utc)
         db.session.commit()
         return True
     return False

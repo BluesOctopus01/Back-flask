@@ -73,5 +73,5 @@ def pause_session(user_id, role, session_id):
 @session_bp.route("/<int:session_id>", methods=["DELETE"])
 @jwt_required
 def end_session(user_id, role_id, session_id):
-    # endregion
     return end_session_controller(user_id, session_id)
+    # endregion

@@ -51,6 +51,9 @@ def create_app(config_class=None):
 
     from app.models.tags import Tag, TagDeck
 
+    from app.models.session_models.session import Session
+    from app.models.session_models.session_card import SessionCardStat
+
     # # Import & Enregistrement des blueprints
     # from app.routes.todo_routes import todo_bp
     from app.routes.user_route import user_bp

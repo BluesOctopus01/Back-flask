@@ -139,7 +139,6 @@ def end_session_controller(user_id, session_id):
     if not session_response:
         return jsonify({"message": "ERROR"}), 500
     return jsonify({"message": "Session terminated"}), 200
-    # TODO continuer
 
 
 # endregion
