@@ -115,3 +115,36 @@ def end_session(session: Session) -> bool:
 
 # endregion
 # Todo draw cards/ shuffle / validate card /etc
+# 🔹 Cycle de jeu
+
+#     Création de session
+
+#         Tu crées une Session.
+
+#         Tu insères toutes les cartes du deck dans SessionCardStat avec validated = FALSE.
+
+#     Répondre à une carte
+
+#         L’utilisateur envoie sa réponse via une route (ex. PATCH /sessions/<id>/cards/<id>/answer).
+
+#         Tu compares avec la bonne réponse.
+
+#         Tu mets à jour les stats :
+
+#             attempt_count += 1
+
+#             Si correct → correct_count += 1, validated = TRUE (la carte sort du pool).
+
+#             Si incorrect → failed_count += 1, validated = FALSE (elle reste dans le pool).
+
+#     Pool actif
+
+#         Les cartes encore en jeu sont celles avec validated = FALSE.
+
+#         Tu peux récupérer la prochaine carte avec :
+#         sql
+# Fin de session
+
+#     Quand toutes les cartes sont validated = TRUE, la session est terminée.
+
+#     Tu peux mettre à jour session.status = FINISHED et session_ended_at = now().
