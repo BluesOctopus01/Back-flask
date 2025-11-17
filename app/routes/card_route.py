@@ -73,7 +73,7 @@ def delete_card(user_id, role, deck_id, card_id):
     return delete_card_controller(user_id, deck_id, card_id)
 
 
-@deck_bp.route("/<int:deck_id>/cards/<int:card_id>", methods=["DELETE"])
+@deck_bp.route("/<int:deck_id>/cards/<int:card_id>/admin", methods=["DELETE"])
 @admin_required
 def delete_card_admin(card_id):
     return delete_card_admin_controller(card_id)

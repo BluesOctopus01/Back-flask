@@ -109,6 +109,7 @@ def session_draw_card_controller(user_id, session_id):
     if isinstance(random_card, Card):
         response_random = random_card.to_dict()
         return jsonify(response_random), 200
+    return jsonify({"message": "Internal error"}), 500
 
 
 # endregion
