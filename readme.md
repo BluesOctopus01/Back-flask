@@ -145,7 +145,7 @@ Pour installer et lancer le projet **Balto**, suivez les étapes ci-dessous :
 
 4. **Configurer la base de données**
 
-`Modifier config.py avec vos paramètres (PostgreSQL, MySQL ou SQLite).`
+    `Modifier config.py avec vos paramètres (PostgreSQL, MySQL ou SQLite).`
 
 5. **Démarrer le serveur**
 
