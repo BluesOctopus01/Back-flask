@@ -13,6 +13,8 @@ from app.services.session_service import (
     restart_session,
     succeed_finish_session,
     end_session,
+    create_session,
+    create_session_stat,
 )
 
 
@@ -40,6 +42,9 @@ def create_session_controller(user_id, deck_id, data_access):
         return jsonify(err), status
 
     session = create_session(user_id, deck_id)
+
+    create_session_stat(deck, user_id, session)
+
     response_session = session.to_dict()
 
     return jsonify(response_session), 201
@@ -87,6 +92,15 @@ def admin_all_sessions():
     sessions = admin_fetch_sessions()
     sessions_dict = [session.to_dict() for session in sessions]
     return jsonify(sessions_dict), 200
+
+
+def session_draw_card_controller(user_id, session_id):
+    """EndPoint : GET /sessions/:id/draw-card"""
+    random_card = draw_card(session_id, user_id)
+    if not random_card:
+        return jsonify({"message": "All card are validated !"}), 204
+    response_random = random_card.to_dict()
+    return jsonify(response_random), 200
 
 
 # endregion

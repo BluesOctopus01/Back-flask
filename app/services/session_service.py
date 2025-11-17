@@ -1,7 +1,12 @@
 from app.models.session_models.session import Session
+from app.models.session_models.session_card import SessionCardStat
 from app.models import db
 from datetime import datetime, timezone
 from app.models.cards_models.card_base import Card
+from app.models.deck import Deck
+
+# permet d'importer l'aléatoire dans la querry
+from sqlalchemy.sql.expression import func
 
 
 def is_owner_session(user_id: int, session: Session) -> bool:
@@ -20,6 +25,16 @@ def create_session(user_id: int, deck_id: int) -> Session:
     db.session.commit()
 
     return new_session
+
+
+def create_session_stat(deck: Deck, user_id: int, session: Session) -> None:
+    """Create a second table, stat session who bears the cards"""
+
+    for card in deck.cards:
+        stat = SessionCardStat(user_id=user_id, card_id=card.id, session_id=session.id)
+        db.session.add(stat)
+
+    db.session.commit()
 
 
 # endregion
@@ -61,9 +76,19 @@ def admin_fetch_sessions() -> list[Session]:
     return Session.query.all()
 
 
-# todo reflechir..
-def draw_card() -> Card:
-    pass
+def draw_card(session_id: int, user_id: int) -> Card | None:
+    """Draw a random card, in the validated = False pool, return a card"""
+    card_stat: SessionCardStat = (
+        SessionCardStat.query.filter_by(
+            session_id=session_id, user_id=user_id, validated=False
+        )
+        .order_by(func.random())
+        .first()
+    )
+    if not card_stat:
+        return None
+    card: Card = card_stat.card
+    return card
 
 
 # endregion
@@ -114,6 +139,8 @@ def end_session(session: Session) -> bool:
 
 
 # endregion
+
+
 # Todo draw cards/ shuffle / validate card /etc
 # 🔹 Cycle de jeu
 

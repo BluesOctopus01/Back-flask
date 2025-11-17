@@ -10,6 +10,7 @@ from app.controllers.session_controller import (
     all_sessions_by_user_controller,
     admin_all_sessions,
     update_session_controller,
+    session_draw_card_controller,
 )
 
 session_bp = Blueprint("session_bp", __name__, url_prefix="/sessions/")
@@ -47,6 +48,12 @@ def join_session_by_id(user_id, role, session_id):
 @jwt_required
 def history_session(user_id, role):
     return all_sessions_by_user_controller(user_id)
+
+
+@session_bp.route("/<int:session_id>/draw-card")
+@jwt_required
+def draw_card(user_id, role, session_id):
+    return session_draw_card_controller(user_id, session_id)
 
 
 @session_bp.route("/admin", methods=["GET"])
