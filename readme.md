@@ -44,14 +44,14 @@ L’objectif est de fournir une API REST permettant de gérer des utilisateurs, 
 
 ## 📂 Structure du projet
 
-   ```bash
+   `
 app/
 │── controllers/ # Logique métier (users, decks, cards, tags, sessions)
 │── routes/ # Définition des Blueprints Flask
 │── utils/ # Outils (JWT, middlewares, etc.)
 │── models/ # Modèles de données (SQLAlchemy)
 │── init.py # Initialisation de l'application Flask
-```
+`
 
 ---
 
@@ -143,9 +143,14 @@ Pour installer et lancer le projet **Balto**, suivez les étapes ci-dessous :
     pip install -r requirements.txt
     ```
 
-4. **Configurer la base de données**
+4. **Configurer les variables d’environnement**
 
-    `Modifier config.py avec vos paramètres (PostgreSQL, MySQL ou SQLite).`
+    Créez un fichier .env à la racine du projet (non inclus dans Git) avec vos paramètres :
+
+    ```bash
+    SECRET_KEY=secret_key
+    DATABASE_URL=postgresql://user:password@localhost:5432/balto 
+    ```
 
 5. **Démarrer le serveur**
 
