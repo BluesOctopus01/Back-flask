@@ -44,14 +44,14 @@ L’objectif est de fournir une API REST permettant de gérer des utilisateurs, 
 
 ## 📂 Structure du projet
 
-   `
+   ```bash
 app/
 │── controllers/ # Logique métier (users, decks, cards, tags, sessions)
 │── routes/ # Définition des Blueprints Flask
 │── utils/ # Outils (JWT, middlewares, etc.)
 │── models/ # Modèles de données (SQLAlchemy)
 │── init.py # Initialisation de l'application Flask
-`
+```
 
 ---
 
