@@ -33,11 +33,37 @@ class Session(db.Model):
         ),
     )
 
-    def to_dict(self) -> dict:
-        """Return a JSON-compatible dictionary respresenting the Session"""
-        return {
+    # def to_dict(self) -> dict:
+    #     """Return a JSON-compatible dictionary respresenting the Session"""
+    #     return {
+    #         "id": self.id,
+    #         "created_at": self.created_at.isoformat(),
+    #         "ended_at": self.ended_at.isoformat() if self.ended_at else None,
+    #         "status": self.status,
+    #     }
+
+    # TODO COMPRENDRE
+    def to_dict(self, include_cards: bool = False) -> dict:
+        """Return a JSON-compatible dictionary representing the Session with optional stats and cards"""
+        stats = {
+            "total_cards": len(self.session_cards),
+            "validated_cards": sum(1 for s in self.session_cards if s.validated),
+            "attempt_count": sum(s.attempt_count for s in self.session_cards),
+            "correct_count": sum(s.correct_count for s in self.session_cards),
+            "failed_count": sum(s.failed_count for s in self.session_cards),
+        }
+
+        session_dict = {
             "id": self.id,
             "created_at": self.created_at.isoformat(),
             "ended_at": self.ended_at.isoformat() if self.ended_at else None,
             "status": self.status,
+            "deck_id": self.deck_id,
+            "user_id": self.user_id,
+            "stats": stats,
         }
+
+        if include_cards:
+            session_dict["cards"] = [s.to_dict() for s in self.session_cards]
+
+        return session_dict

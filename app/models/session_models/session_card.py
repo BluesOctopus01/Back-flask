@@ -19,7 +19,7 @@ class SessionCardStat(db.Model):
     session = db.relationship("Session", backref="session_cards")
 
     def to_dict(self) -> dict:
-        """Return a JSON-compatible dictionary representing the SessionCardStat"""
+        """Return a JSON-compatible dictionary representing the SessionCardStat + Card info"""
         return {
             "user_id": self.user_id,
             "card_id": self.card_id,
@@ -28,4 +28,5 @@ class SessionCardStat(db.Model):
             "correct_count": self.correct_count,
             "failed_count": self.failed_count,
             "validated": self.validated,
+            "card": self.card.to_dict() if self.card else None,
         }

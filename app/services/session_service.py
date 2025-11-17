@@ -76,7 +76,7 @@ def admin_fetch_sessions() -> list[Session]:
     return Session.query.all()
 
 
-def draw_card(session_id: int, user_id: int) -> Card | None:
+def draw_card(session_id: int, user_id: int) -> Card | Session:
     """Draw a random card, in the validated = False pool, return a card"""
     card_stat: SessionCardStat = (
         SessionCardStat.query.filter_by(
@@ -86,7 +86,9 @@ def draw_card(session_id: int, user_id: int) -> Card | None:
         .first()
     )
     if not card_stat:
-        return None
+        session = fetch_session_by_id(session_id)
+        session_stat = succeed_finish_session(session)
+        return session_stat
     card: Card = card_stat.card
     return card
 
@@ -113,15 +115,38 @@ def restart_session(session: Session) -> Session | None:
     return None
 
 
-def succeed_finish_session(session: Session) -> bool:
+def succeed_finish_session(session: Session) -> Session:
     """FINISHED a session if every condition are completed return True or false"""
     session.status = "FINISHED"
     if session:
         session.status = "FINISHED"
         session.ended_at = datetime.now(timezone.utc)
         db.session.commit()
-        return True
-    return False
+        return session
+
+
+# TODO a terme jouer avec des validations automatiques
+def validate_answer(
+    session_id: int, user_id: int, card_id: int, data: dict
+) -> SessionCardStat | None:
+    """Update the SessionCardStat card Validation, to true or keep it false and increment, return the card"""
+    stat: SessionCardStat = SessionCardStat.query.filter_by(
+        session_id=session_id, user_id=user_id, card_id=card_id
+    ).first()
+
+    if data["validation"] not in ["True", "False"]:
+        return None
+
+    stat.attempt_count += 1
+
+    if data["validation"] == "True":
+        stat.validated = True
+        stat.correct_count += 1
+    if data["validation"] == "False":
+        stat.failed_count += 1
+
+    db.session.commit()
+    return stat
 
 
 # endregion
@@ -175,3 +200,13 @@ def end_session(session: Session) -> bool:
 #     Quand toutes les cartes sont validated = TRUE, la session est terminée.
 
 #     Tu peux mettre à jour session.status = FINISHED et session_ended_at = now().
+
+# POST /sessions/decks/:deck_id → création
+
+# GET /sessions/:id/draw-card → pioche
+
+# PATCH /sessions/:id/cards/:card_id/answer → réponse
+
+# PATCH /sessions/:id/end → fin
+
+# PATCH /sessions/:id → pause/restart

@@ -11,6 +11,7 @@ from app.controllers.session_controller import (
     admin_all_sessions,
     update_session_controller,
     session_draw_card_controller,
+    answer_card_controller,
 )
 
 session_bp = Blueprint("session_bp", __name__, url_prefix="/sessions/")
@@ -71,6 +72,13 @@ def get_all_sessions():
 def pause_session(user_id, role, session_id):
     data = request.get_json()
     return update_session_controller(user_id, session_id, data)
+
+
+@session_bp.route("/<int:session_id>/cards/<int:card_id>/answer", methods=["PATCH"])
+@jwt_required
+def answer_card_session(user_id, role, session_id, card_id):
+    data = request.get_json()
+    return answer_card_controller(user_id, session_id, card_id, data)
 
 
 # endregion

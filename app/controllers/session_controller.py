@@ -15,6 +15,7 @@ from app.services.session_service import (
     end_session,
     create_session,
     create_session_stat,
+    validate_answer,
 )
 
 
@@ -96,11 +97,18 @@ def admin_all_sessions():
 
 def session_draw_card_controller(user_id, session_id):
     """EndPoint : GET /sessions/:id/draw-card"""
+    # TODO sécurité en plus ?
+    session = fetch_session_by_user_id(user_id)
+    if not session:
+        return jsonify({"message": "No current session active"}), 404
+
     random_card = draw_card(session_id, user_id)
-    if not random_card:
-        return jsonify({"message": "All card are validated !"}), 204
-    response_random = random_card.to_dict()
-    return jsonify(response_random), 200
+    if isinstance(random_card, Session):
+        response_end_session = random_card.to_dict()
+        return jsonify(response_end_session), 200
+    if isinstance(random_card, Card):
+        response_random = random_card.to_dict()
+        return jsonify(response_random), 200
 
 
 # endregion
@@ -134,6 +142,21 @@ def update_session_controller(user_id, session_id, data):
         return jsonify({"message": "Action not allowed"}), 400
 
     return jsonify(session_action.to_dict()), 200
+
+
+def answer_card_controller(user_id, session_id, card_id, data):
+    """PATCH /sessions/:id/cards/:card_id/answer"""
+    session = fetch_session_by_id(session_id)
+    if not session:
+        return jsonify({"message": "Session not found"}), 404
+
+    card_stat = validate_answer(session_id, user_id, card_id, data)
+    if not card_stat:
+        return jsonify({"message": "Validation error"}), 400
+
+    card_response = card_stat.to_dict()
+    card_response["result"] = "correct" if card_stat.validated else "wrong"
+    return jsonify(card_response), 200
 
 
 # endregion
