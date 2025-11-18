@@ -50,11 +50,7 @@ app/
 │── controllers/ # Renvoie des HTTPS STATUS
 |── DTO/ # Vérification des données fournis (card,deck,tag,user)
 │── models/ # Modèles de données (SQLAlchemy)
-│── routes/ # Définition des Blueprints Flask
-│── services/ # Logique métier (users, decks, cards, tags, sessions)
-│── tests/ # Test unitaire (deck, user)
-│── utils/ # Outils (JWT, data_utils,verify_utils)
-─ main.py # Initialisation de l'application Flask
+│── init.py # Initialisation de l'application Flask
 ```
 
 ---
