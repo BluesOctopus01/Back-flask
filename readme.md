@@ -50,7 +50,12 @@ app/
 │── controllers/ # Renvoie des HTTPS STATUS
 │── DTO/ # Vérification des données fournis (card,deck,tag,user)
 │── models/ # Modèles de données (SQLAlchemy)
-│── init.py # Initialisation de l'application Flask
+│── routes/ #route (card,deck,session,tag,user)
+│── services/ # Logique métier(card,deck,session,tag,user)
+│── tests/ # test unitaires(init,deck,user)
+│── utils/ # JWT,data_utils,verify_utils
+─main.py # Initialisation de l'application Flask
+
 ```
 
 ---
