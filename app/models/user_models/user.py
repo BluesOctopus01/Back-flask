@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
     gender = db.Column(db.String(1), nullable=False, default=UNDEFINED)
 
     phone_number = db.Column(db.String(20), nullable=False)
-    birth_date = db.Column(db.Date, nullable=False)
+    birthdate = db.Column(db.Date, nullable=False)
 
     country = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(200), nullable=False)
@@ -51,7 +51,7 @@ class User(db.Model, UserMixin):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "gender": self.gender,
-            "birth_date": self.birth_date.isoformat() if self.birth_date else None,
+            "birthdate": self.birthdate.isoformat() if self.birthdate else None,
             "country": self.country,
             "address": self.address,
             "user_bio": self.user_bio,
