@@ -44,14 +44,18 @@ L’objectif est de fournir une API REST permettant de gérer des utilisateurs, 
 
 ## 📂 Structure du projet
 
-   `
+   ```bash
 app/
-│── controllers/ # Logique métier (users, decks, cards, tags, sessions)
-│── routes/ # Définition des Blueprints Flask
-│── utils/ # Outils (JWT, middlewares, etc.)
+|── configs/ #pour instancier les test dans une db fictive
+│── controllers/ # Renvoie des HTTPS STATUS
+|── DTO/ # Vérification des données fournis (card,deck,tag,user)
 │── models/ # Modèles de données (SQLAlchemy)
-│── init.py # Initialisation de l'application Flask
-`
+│── routes/ # Définition des Blueprints Flask
+│── services/ # Logique métier (users, decks, cards, tags, sessions)
+│── tests/ # Test unitaire (deck, user)
+│── utils/ # Outils (JWT, data_utils,verify_utils)
+─ main.py # Initialisation de l'application Flask
+```
 
 ---
 
@@ -155,5 +159,9 @@ Pour installer et lancer le projet **Balto**, suivez les étapes ci-dessous :
 5. **Démarrer le serveur**
 
     ```bash
-    flask run
+    python main.py
     ```
+
+## 💹 Point d'amélioration
+
+- Utiliser des middlewear pour éviter les répétitions inutiles de codes
