@@ -54,7 +54,7 @@ app/
 │── services/ # Logique métier(card,deck,session,tag,user)
 │── tests/ # test unitaires(init,deck,user)
 │── utils/ # JWT,data_utils,verify_utils
-─main.py # Initialisation de l'application Flask
+─ main.py # Initialisation de l'application Flask
 
 ```
 
