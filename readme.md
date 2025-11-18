@@ -46,9 +46,9 @@ L’objectif est de fournir une API REST permettant de gérer des utilisateurs, 
 
    ```bash
 app/
-|── configs/ #pour instancier les test dans une db fictive
+│── configs/ #pour instancier les test dans une db fictive
 │── controllers/ # Renvoie des HTTPS STATUS
-|── DTO/ # Vérification des données fournis (card,deck,tag,user)
+│── DTO/ # Vérification des données fournis (card,deck,tag,user)
 │── models/ # Modèles de données (SQLAlchemy)
 │── init.py # Initialisation de l'application Flask
 ```
