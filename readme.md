@@ -163,6 +163,8 @@ Pour installer et lancer le projet **Balto**, suivez les étapes ci-dessous :
     python main.py
     ```
 
+---
+
 ## 💹 Point d'amélioration
 
 - Utiliser des middlewear pour éviter les répétitions inutiles de codes
