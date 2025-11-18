@@ -101,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           #patch | minor | major
-          DEFAULT_BUMP: minor
+          DEFAULT_BUMP: patch
           RELEASE_BRANCHES: main
           # L'objectif de notre action est de calculé la prochaine version
           # et créer un tag (1.0.2 => 1.0.3) => Bump par default PATCH
