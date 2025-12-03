@@ -17,6 +17,7 @@ class Tag(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "deckCount": len(self.decks),
         }
 
 

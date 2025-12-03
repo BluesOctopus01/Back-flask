@@ -35,7 +35,7 @@ def create_app(config_class=None):
     # Initalisation des extensions avec l'application
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
+    CORS(app, origins=["http://localhost:4200"], supports_credentials=True)
 
     # Import des models
     from app.models.user_models.user import User
