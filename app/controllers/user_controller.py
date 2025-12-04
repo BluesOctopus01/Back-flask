@@ -46,7 +46,7 @@ def get_users_controller():
     """EndPoint : GET /users/admin/"""
     try:
         users = fetch_all_users()
-        users_dict = [user.to_dict() for user in users]
+        users_dict = [user.to_summary_dict() for user in users]
         return jsonify(users_dict), 200
     except Exception as e:
         return jsonify({"error": "Failed to fetch users", "details": str(e)}), 500

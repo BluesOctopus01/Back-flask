@@ -74,7 +74,7 @@ def soft_delete_user_self(user_id, role):
     return soft_delete_user_controller(user_id)
 
 
-@user_bp.route("delete/<id>", methods=["DELETE"])
+@user_bp.route("/admin/delete/<id>", methods=["DELETE"])
 @admin_required
 def soft_delete_user(id):
     return hard_delete_user_controller(id)
